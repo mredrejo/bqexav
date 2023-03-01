@@ -16,6 +16,12 @@ format:
 #    latex_engine: xelatex
 ---
 
+# Contents and Disclaimer
+
+This file contains the data from the course "Experimental Advanced Biochemistry I" (Biochemistry Degree, [Universidad Autónoma de Madrid](https://www.uam.es)). Surveys were filled by students in the years 2017-2022 directly on Moodle the last day of each course. This is a preliminary summary of the data analysis. The GitHub [repo](https://github.com/mredrejo/bqexav) contains the original files from all the analyses.
+
+Data is shared under creative common license (CC BY-NC-ND 3.0 ES). Contact [modesto.redrejo\@uam.es](mailto:modesto.redrejo@uam.es) for further info.
+
 # Moodle survey
 
 ```{r include=FALSE,warning=FALSE}
