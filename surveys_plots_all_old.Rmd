@@ -1,0 +1,325 @@
+---
+title: "BqExAvI"
+author: "Modesto Redrejo Rodríguez"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+#Moodle survey 
+
+```{r}
+#Load/install requires packages
+paquetes <- c("ggplot2","data.table","kableExtra","corrplot","heatmaply","reshape2","plotly","dplyr")
+unavailable <- setdiff(paquetes, rownames(installed.packages()))
+invisible(install.packages(unavailable))
+invisible(lapply(paquetes, library, character.only = TRUE))
+```
+We are importing the data from the students answers in 5 years, between 2018-2022. The quiz consists on 77 questions, being 5 free-text questions (50, 51, 52, 75, 76 & 77), 7 three-options questions (less time, good as it is or more time) and the rest in Likert scale. The latter will be categorized as "Positive" or "Negative" if 5 ("Totally agree") means a good or bad answer.
+
+```{r}
+#load questions
+questions <- read.csv("questions.csv", head=TRUE, sep=";")
+questions <- cbind(row.names(questions),questions[,c(3,1,2)])
+#add type variable
+questions$type <- "Pos."
+questions$type[questions$Section=="Open"] <- ""
+questions[c(4,10,56,63,63,64,65,66,67,72),5] <- "Neg."
+questions$type[questions$Section=="Open"] <- "NA"
+colnames(questions) <- c("No.","Since","Section","Question","Type")
+
+kbl(questions, align = "cccl", caption = "Table 1. Students opinion quizz. The bulk of the questionaire was designed for the year 2017 and new questions were added as indicated in the rightmost column.") %>%
+    kable_styling(bootstrap_options = "striped", full_width = F) %>%
+    column_spec(1, italic = T)
+```
+
+Survey answers were downloaded from Moodle as txt/csv files. Moodle updates generated some format differences that could be bypassed after opening the files with Numbers and exporting as tables with ";" as column separator.
+```{r}
+#read the data in a list of dataframes
+#didn't use the headers to avoid mistakes
+quiz <- lapply(2017:2022, function(x) read.csv(paste0("survey",x,".csv"),header=FALSE,skip=1,sep=";"))
+#add Year as the third variable (empty so far)
+curso <- c("2017","2018","2019","2020","2021","2022")
+for (i in 1:length(quiz)){
+  quiz[[i]][,3] <- curso[i]
+}
+
+#adjust questions changes
+#remove questions in column 32 & 40 from 2017, because we removed it in the following years
+quiz[[1]] <- quiz[[1]][,-c(32,40)]
+quiz[[6]] <- quiz[[6]][,-10]
+names(quiz[[6]]) <- names(quiz[[5]])
+names(quiz[[1]]) <- names(quiz[[2]])
+#merge all dataframes and name the columns 
+data <- Reduce(function(x, y) merge(x, y, all=TRUE), quiz)
+#take the colnames from the last quiz that contains all the questions
+
+colnames(data)[3] <- "Curso"
+
+
+#statistics analysis
+#subset questions 1: remove leftmost junk columns
+subdata <- data[,c(3,11:87)]
+#subset questions 2: remove open questions
+open <- c(row.names(questions[questions$Section=="Open",]))
+subdata <- subdata[,-(as.integer(open)+1)]
+subdata <- sapply(subdata,as.numeric)
+subdata <- as.data.frame(subdata)
+
+
+tests <- list()
+nombres <- c()
+
+for (i in 2:ncol(subdata)){
+  subdata[,i][!(subdata[,i] %in% c(1,2,3,4,5))] <- NA
+  #subset for years with answers to avoid void groups
+  kkk <- subset(subdata,!is.na(subdata[,i]))
+  tests[[i-1]] <- pairwise.t.test(x=as.numeric(kkk[,i]),g=as.numeric(kkk[,1]),paired = F)
+  nombres[i-1] <- questions[,4][(which(colnames(data) %in% colnames(subdata[i])))-11]
+  names(tests) <- nombres
+  print(names(tests[i-1]))
+  print(tests[[i-1]]$p.value)
+}
+
+#plots
+#update question nubers
+
+
+#stack table and add question type (except open)
+subdata.stack <- cbind(subdata[,1],stack(subdata[,2:72]))
+names(subdata.stack) <- c("Curso","value","question")
+#add categories
+
+
+
+
+#plot in groups by section
+for (i in length(as.factor(subdata.stack$section))){
+  kkk <- subdata.stack[subdata.stack$section==levels(as.factor(subdata.stack$section))[i],]
+  pp <- ggboxplot(kkk, x = "Curso", y = "value",
+          color = "Curso", palette = "jco",
+          add = "jitter",
+          facet.by = "question", short.panel.labs = FALSE)
+  pp + theme(axis.text.x = element_text(size = 15, angle=45,vjust=0.1),axis.text.y = element_text(size = 15)) + theme(legend.position="none")+
+    stat_compare_means(label = "p.format",method = "t.test",
+                     ref.group = ".all.", hide.ns = TRUE) 
+}
+
+
+
+
+ggplot(subdata.stack, aes(x = subdata.stack[,1], y = subdata.stack[,2],
+                       color = data.stack[,1], fill = data.stack[,1],
+                       shape = data.stack[,1])) + 
+    geom_boxplot(outlier.shape = NA,alpha=0.2) +   scale_shape_manual(values = c(18,21,22,23,24,25)) + scale_fill_brewer(palette="Spectral")+ scale_color_brewer(palette="Spectral")+
+    geom_jitter(aes(x = data.stack[,1], y = data.stack[,2]), size=3, width=0.25, alpha=0.75) +theme_bw(base_size = 12) + facet_wrap(~subdata.stack[,2])
+
+
+ggplot(subdata.stack, aes(x = subdata.stack[,1], y = subdata.stack[,2],
+                       color = data.stack[,1], fill = data.stack[,1],
+                       shape = data.stack[,1])) + 
+    geom_boxplot(outlier.shape = NA,alpha=0.2) +   scale_shape_manual(values = c(18,21,22,23,24,25)) + scale_fill_brewer(palette="Spectral")+ scale_color_brewer(palette="Spectral")+
+    geom_jitter(aes(x = data.stack[,1], y = data.stack[,2]), size=3, width=0.25, alpha=0.75) +theme_bw(base_size = 12) + facet_wrap(~subdata.stack[,2])
+
+
+# boxplot
+library(ggplot2)
+library(ggpubr)
+#http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/76-add-p-values-and-significance-levels-to-ggplots/
+#https://www.datanovia.com/en/blog/how-to-add-p-values-onto-basic-ggplots/
+
+
+pp <- ggboxplot(subdata.stack, x = "Curso", y = "value",
+          color = "Curso", palette = "jco",
+          add = "jitter",
+          facet.by = "question", short.panel.labs = FALSE)
+pp + stat_compare_means(label = "p.format",method = "t.test",
+                     ref.group = ".all.", hide.ns = TRUE) 
+
+
+#all
+ggplot(data.stack, aes(x = data.stack[,1], y = data.stack[,3],
+                       color = data.stack[,1], fill = data.stack[,1],
+                       shape = data.stack[,1])) + 
+    geom_boxplot(outlier.shape = NA,alpha=0.2) +   scale_shape_manual(values = c(22,23,24,25)) + scale_fill_brewer(palette="Spectral")+ scale_color_brewer(palette="Spectral")+
+    geom_jitter(aes(x = data.stack[,1], y = data.stack[,3]), size=3, width=0.25, alpha=0.75) +theme_bw(base_size = 12) + facet_wrap(~variable)
+
+#respuestas positivas: (5 lo mejor) 1, 2, 3, 5, 6:10,16:19,21,22
+positivo <- levels(data.stack$variable)[c(1,2,3,5,6,7,8,9,10,16,17,18,19,21,22)]
+data.pos <- data.stack[data.stack$variable %in% positivo,]
+ggplot(data.pos, aes(x = data.pos[,1], y = data.pos[,3],
+                       color = data.pos[,1], fill = data.pos[,1],
+                       shape = data.pos[,1])) + 
+    geom_boxplot(outlier.shape = NA,alpha=0.2) +   scale_shape_manual(values = c(22,23,24,25)) + scale_fill_brewer(palette="Spectral")+ scale_color_brewer(palette="Spectral")+
+    geom_jitter(aes(x = data.pos[,1], y = data.pos[,3]), size=3, width=0.25, alpha=0.75) +theme_bw(base_size = 12) + facet_wrap(~variable) + ggtitle("Respuestas sobre el ELN ('positivas', 1: Totally disagree, 5: Totally agree)") +theme(plot.title = element_text(hjust = 0.5,size = 28, face = "bold"),strip.text = element_text(size = 15),axis.text.x = element_text(size = 15),axis.text.y = element_text(size = 15)) + theme(legend.position="none")
+
+#respuestas negativas: (1 lo mejor) 1, 2, 3, 5, 6:10,16:19,21,22
+negativo <- levels(data.stack$variable)[c(4,11,12,13,14,15,20)]
+data.neg <- data.stack[data.stack$variable %in% negativo,]
+ggplot(data.neg, aes(x = data.neg[,1], y = data.neg[,3],
+                       color = data.neg[,1], fill = data.neg[,1],
+                       shape = data.neg[,1])) + 
+    geom_boxplot(outlier.shape = NA,alpha=0.2) +   scale_shape_manual(values = c(22,23,24,25)) + scale_fill_brewer(palette="Spectral")+ scale_color_brewer(palette="Spectral")+
+    geom_jitter(aes(x = data.neg[,1], y = data.neg[,3]), size=3, width=0.25, alpha=0.75) +theme_bw(base_size = 12) + facet_wrap(~variable) + ggtitle("Respuestas sobre OneNote ('negativas', 1: Totally disagree, 5: Totally agree)") +theme(plot.title = element_text(hjust = 0.5,size = 28, face = "bold"),strip.text = element_text(size = 15),axis.text.x = element_text(size = 15),axis.text.y = element_text(size = 15)) + theme(legend.position="none")
+
+
+#stats
+curso <- pairwise.t.test(x=data.stack$value,g=data.stack$Curso,paired = F)
+library(dplyr)
+library(kableExtra)
+kbl(curso$p.value, align = "c", row.names=F, caption = "Unpaired pairwise t.test pvalues") %>%
+    kable_styling(bootstrap_options = "striped", full_width = F,
+        position = "center") %>%
+    column_spec(1, italic = T) 
+
+
+#por pregunta
+preguntas <- pairwise.t.test(x=data.stack$value,g=data.stack$variable,paired = F)
+
+kbl(preguntas$p.value, align = "c", row.names=F, caption = "Unpaired pairwise t.test pvalues") %>%
+    kable_styling(bootstrap_options = "striped", full_width = F,
+        position = "center") %>%
+    column_spec(1, italic = T) 
+
+
+#por pregunta y año
+data.split <- list()
+test.split <- list()
+aov.split <- list()
+summary.split <- list()
+for (i in 1:length(levels(data.stack$variable))){
+  data.split[[i]] <- subset(data.stack,data.stack$variable==levels(data.stack$variable)[i])
+  aov.split[[i]] <-  aov(data.split[[i]]$value~data.split[[i]]$Curso)
+  summary.split[[i]] <- summary(aov.split[[i]])
+  test.split[[i]] <- pairwise.t.test(x=data.split[[i]]$value,g=data.split[[i]]$Curso,paired=FALSE) 
+}
+names(summary.split) <- levels(data.stack$variable)
+names(test.split) <- levels(data.stack$variable)
+
+#define file name
+sink('pairwise.t_per_question_per_year.txt')
+#print my_list to file
+print(summary.split)
+print(test.split)
+#close external connection to file 
+sink()
+
+lapply(split(data.stack, data.stack$variable), function(TD) pairwise.t.test(value ~ curso), TD)
+ggplot(data, aes(x = data[,1], y = data[,5],
+               colour = data[,1],
+               shape = data[,1])) + 
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(width=0.25, alpha=0.5) +theme_bw(base_size = 13)
+
+ggplot(data.stack, aes(x = data.stack[,1], y = data.stack[,3],
+               color = data.stack[,1], fill = data.stack[,1],
+               shape = data.stack[,1])) + 
+  geom_boxplot(outlier.shape = NA) +   scale_shape_manual(values = c(22,23,24,25)) + scale_fill_brewer(palette="RdBu")+ scale_color_brewer(palette="RdBu")+
+  geom_jitter(aes(x = data.stack[,1], y = data.stack[,3]), width=0.25, alpha=0.5) +theme_bw(base_size = 12) + facet_wrap(~variable)
+
+ggplot(data.stack, aes(x = data.stack[,1], y = data.stack[,3],
+               colour = data.stack[,1],
+               shape = data.stack[,1])) + 
+  geom_violin(trim=FALSE,adjust=1.2) +   stat_summary(fun = "mean",     geom = "point") +
+ stat_summary(fun = "mean",     geom = "point", size=2, show.legend = TRUE) +  geom_jitter(width=0.25,height = 0.25, alpha=0.25) +theme_bw(base_size = 12) +  
+  facet_wrap(~variable,labeller=label_value(titulos, multi_line = TRUE)) +  ylim(0.4,5.6)
+
+#
+ggplot(data.stack, aes(x = data.stack[,1], y = data.stack[,3],
+               colour = data.stack[,1],
+               shape = data.stack[,1])) + 
+  geom_violin(trim=FALSE,adjust=1.2) +   stat_summary(fun = "mean",     geom = "point") +
+ stat_summary(fun = "mean",     geom = "point", size=2, show.legend = TRUE) +  geom_point(pch=21,position=position_jitterdodge(), alpha=0.25) +theme_bw(base_size = 12) +  
+  facet_wrap(~question) +  ylim(0.4,5.6)
+
+
+
+#consolidate by year
+curso <- c("2019-20","2020-21","2021-22")
+df <- data.frame(curso)
+for (i in 2:23){
+  df[,i] <- tapply(data[,i],data[,1],mean, na.rm=TRUE)
+}
+colnames(df) <- c("Curso",names(data[2:23]))
+rownames(df) <- c("2019-2020","2020-2021","2021-2022")
+
+df2 <- tapply(data.stack$value,list("Year"=data.stack$year,"Question"=data.stack$question),FUN=mean)
+df3 <- melt(df2)
+#
+ggplot(df, aes(x = df[,1], y = df[,4])) +
+  geom_segment(aes(x = df[,1], xend = df[,1], y = 1, yend = 5),
+               color = "gray", lwd = 1) +
+  geom_point(size = 7.5, pch = 21, bg = 4, col = 1) +
+  geom_text(aes(label = round(df[,2],1)), color = "white", size = 3) +
+  scale_x_discrete(labels = paste0("G_", 1:10)) +
+  coord_flip() + 
+  theme_minimal()
+
+
+ggplot(df3, aes(x = Year, y = value)) +
+  geom_segment(aes(x = Year, xend = Year, y = 1, yend = 5),
+               color = "gray", lwd = 1) +
+  geom_point(size = 7.5, pch = 21, bg = 4, col = 1, colour=  levels(df3$Year)) +
+  geom_text(aes(label = round(value,1)), color = "white", size = 3) +
+  scale_x_discrete(labels = levels(df3$Year)) +
+  coord_flip() + facet_wrap(~ Question) +
+  theme_minimal()
+
+
+library(ggalt)
+library(tidyverse)
+#code from https://rud.is/b/2019/06/06/make-multi-point-dumbbell-plots-in-ggplot2/
+library(hrbrthemes)
+library(tidyverse)
+
+tibble(
+  val1 = fd[4,],
+  val2 = fd[5,],
+   val3 = fd[6,],
+  val4 = fd[12,],
+  val5 = fd[13,],
+   val6 = fd[15,],
+  cat = factor(fd[1,]))  -> xdf
+
+
+
+ggplot() +
+  # this draws leading eye-tracker dotted line from the category name
+  # to the first point (helps readers follow the values to the categories)
+  geom_segment(
+    data = gather(xdf, measure, val, -cat) %>% 
+      group_by(cat) %>% 
+      top_n(-1) %>% 
+      slice(1) %>%
+      ungroup(),
+    aes(x = 0, xend = val, y = cat, yend = cat),
+    linetype = "dotted", size = 0.5, color = "gray80"
+  ) +
+  # this draws the underlying full segment intelligently choosing
+  # the correct min/max points
+  geom_segment(
+    data = gather(xdf, measure, val, -cat) %>% 
+      group_by(cat) %>% 
+      summarise(start = range(val)[1], end = range(val)[2]) %>% 
+      ungroup(),
+    aes(x = start, xend = end, y = cat, yend = cat),
+    color = "gray80", size = 2
+  ) +
+  # this draws the 
+  geom_point(
+    data = gather(xdf, measure, value, -cat),
+    aes(value, cat, color = measure), 
+    size = 4
+  ) +
+  # i just extended the scale a bit + put axis on top; choose aesthetics that work 
+  # for you
+ scale_x_comma(position = "top", limits = c(1, 5)) +
+ # scale_color_ipsum(name = "A real legend title") +
+  labs(
+    x = "Description of the value", y = NULL,
+    title = "A good plot title"
+  ) +
+  theme_minimal()+
+  theme(legend.position = "top")
+
+```
+

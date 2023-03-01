@@ -1,0 +1,304 @@
+---
+title: "BqExAvI Survey Analysis (2017-2022)"
+author: "Modesto"
+date: "`r Sys.Date()`"
+format:
+  html:
+    toc: true
+    toc-location: left
+    toc-depth: 3
+    number-sections: true
+    code-overflow: wrap
+    code-fold: true
+    code-summary: "Show the code"
+#output:
+#  pdf_document:
+#    latex_engine: xelatex
+---
+
+# Moodle survey
+
+```{r include=FALSE,warning=FALSE}
+#Load/install requires packages
+paquetes <- c("ggplot2","data.table","kableExtra","corrplot","likert","ggpubr","heatmaply","reshape2","plotly","dplyr")
+unavailable <- setdiff(paquetes, rownames(installed.packages()))
+invisible(install.packages(unavailable))
+invisible(lapply(paquetes, library, character.only = TRUE))
+```
+
+We are importing the data from the students answers in 5 years, between 2018-2022. The quiz consists on up to 77 questions, being 5 free-text questions (50, 51, 52, 75, 76 & 77), 7 three-options questions and the rest in Likert scale. The latter will be categorized as "Positive" or "Negative" if 5 ("Totally agree") means a "good" or "bad" feedback.
+
+```{r warning=FALSE}
+#load questions
+questions <- read.csv("questions.csv", head=TRUE, sep=";")
+questions <- cbind(row.names(questions),questions[,c(3,1,2)])
+#add type variable
+questions$type <- "Pos."
+questions$type[questions$Section=="Open"] <- ""
+questions[c(4,10,56,63,63,64,65,66,67,72),5] <- "Neg."
+questions$type[questions$Section=="Open"] <- "NA"
+colnames(questions) <- c("No.","Since","Section","Question","Type")
+
+kbl(questions, align = "cccl", caption = "Table 1. Students opinion quizz. The bulk of the questionaire was designed for the year 2017 and new questions were added as indicated in the rightmost column.") %>%
+    kable_styling(bootstrap_options = "striped", full_width = F) %>%
+    column_spec(1, italic = T)
+```
+
+# Load data and pairwise t.test
+
+Survey answers were downloaded from Moodle as txt/csv files. Moodle updates generated some format differences that could be bypassed after opening the files with Numbers and exporting as tables with ";" as column separator. We now show pairwise t.tests carried out to identify significant differences per year in the answers.
+
+```{r warning=FALSE}
+#read the data in a list of dataframes
+#didn't use the headers to avoid mistakes
+quiz <- lapply(2017:2022, function(x) read.csv(paste0("survey",x,".csv"),header=FALSE,skip=1,sep=";"))
+#add Year as the third variable (empty so far)
+curso <- c("2017","2018","2019","2020","2021","2022")
+for (i in 1:length(quiz)){
+  quiz[[i]][,3] <- curso[i]
+}
+
+#adjust questions changes
+#remove questions in column 32 & 40 from 2017, because we removed it in the following years
+quiz[[1]] <- quiz[[1]][,-c(32,40)]
+quiz[[6]] <- quiz[[6]][,-10]
+names(quiz[[6]]) <- names(quiz[[5]])
+names(quiz[[1]]) <- names(quiz[[2]])
+#merge all dataframes and name the columns 
+data <- Reduce(function(x, y) merge(x, y, all=TRUE), quiz)
+#take the colnames from the last quiz that contains all the questions
+
+colnames(data)[3] <- "Curso"
+
+
+#statistics analysis
+#subset questions 1: remove leftmost junk columns
+subdata <- data[,c(3,11:87)]
+names(subdata) <- c("Curso",paste0("Q",1:77))
+#subset questions 2: remove open questions
+open <- c(row.names(questions[questions$Section=="Open",]))
+subdata <- subdata[,-(as.integer(open)+1)]
+subdata <- sapply(subdata,as.numeric)
+subdata <- as.data.frame(subdata)
+
+
+tests <- list()
+nombres <- c()
+
+for (i in 2:ncol(subdata)){
+  subdata[,i][!(subdata[,i] %in% c(1,2,3,4,5))] <- NA
+  #subset for years with answers to avoid void groups
+  kkk <- subset(subdata,!is.na(subdata[,i]))
+  tests[[i-1]] <- pairwise.t.test(x=as.numeric(kkk[,i]),g=as.numeric(kkk[,1]),paired = F)
+  nombres[i-1] <- questions[,4][(which(questions$No. %in% gsub("\\D", "",colnames(subdata[i]))))]
+  names(tests) <- nombres
+  print(names(tests[i-1]))
+  print(tests[[i-1]]$p.value)
+}
+
+
+```
+
+# Boxplots
+
+Answers from each question are displayed in Boxplots by Year and significant differences from the overall answers are marked.
+
+```{r warning=FALSE}
+
+
+#update question nubers
+#stack table and add question type (except open)
+subdata.stack <- cbind(subdata[,1],stack(subdata[,2:72]))
+names(subdata.stack) <- c("Curso","value","question")
+#add categories
+for (i in 1:nrow(subdata.stack)){
+  subdata.stack[i,4] <- questions$Section[subdata.stack[i,3]==paste0("Q",questions$No.)]
+}
+names(subdata.stack) <- c("Curso","value","question","section")
+
+pp <- list()
+plot <- list()
+
+#plot in groups by section
+
+
+for (i in 1:length(levels(as.factor(subdata.stack$section)))){
+  kkk <- subdata.stack[subdata.stack$section==levels(as.factor(subdata.stack$section))[i],]
+  pp[[i]] <- ggboxplot(kkk, x = "Curso", y = "value",
+          color = "Curso", fill = "Curso",palette = "jco",
+          add = "jitter",alpha = 0.3, ylim = c(0, 6),
+          facet.by = "question")
+  plot[[i]] <- pp[[i]] + ggtitle(levels(as.factor(subdata.stack$section))[i]) + theme(axis.text.x = element_text(size = 15, angle=45,vjust=0.7),axis.text.y = element_text(size = 15),plot.title=element_text(hjust=0.5,face="italic")) + theme(legend.position="none") +
+   stat_compare_means(label = "p.signif",method = "t.test", ref.group = ".all.", hide.ns = TRUE,label.y=5.5,size=6) 
+}
+
+```
+
+```{r  echo=TRUE, fig.height=12,warning=FALSE}
+plot[[1]]
+plot[[2]]
+```
+
+```{r  echo=TRUE, fig.height=8,warning=FALSE}
+plot[[3]]
+```
+
+```{r  echo=TRUE, fig.height=20,warning=FALSE}
+plot[[4]]
+
+```
+
+```{r  echo=TRUE, fig.height=4,warning=FALSE}
+plot[[5]]
+```
+
+```{r  echo=TRUE, fig.height=8,warning=FALSE}
+plot[[6]]
+```
+
+```{r  echo=TRUE, fig.height=12,warning=FALSE}
+plot[[7]]
+```
+
+```{r  echo=TRUE, fig.height=4,warning=FALSE}
+plot[[8]]
+```
+
+```{r  echo=TRUE, fig.height=12,warning=FALSE}
+plot[[9]]
+
+```
+
+# Likert scale plots
+
+Answers in Likert scales are represented by sections in the quiz.
+
+## General Methodology
+
+```{r Fig2, echo=TRUE, fig.height=7,warning=FALSE}
+
+#lickert
+#change question names
+tablita <- data.frame(matrix(NA,    # Create empty data frame
+                          nrow = length(colnames(subdata)),
+                          ncol = 2))
+for (i in 2:length(colnames(subdata))){
+  tablita[i-1,] <- cbind(colnames(subdata[i]),questions$Question[as.numeric(gsub("\\D", "",colnames(subdata[i])))])
+  colnames(subdata)[i] <- tablita[i-1,2]
+}
+
+for (i in 2:72){
+  subdata[,i] <- factor(subdata[,i])
+}
+#questions with 3 options
+#General Methodology
+subdata[,c(8:12)] <- lapply(subdata[,c(8:12)], function(x) factor(x, 
+      labels = c("Traditional","Same","Open Question"))
+  )
+xlikgroup3a = likert(subdata[,c(8:12)], grouping = subdata$Curso)
+plot(xlikgroup3a, type = "bar", centered = T) 
+```
+
+## Activities Length
+
+```{r Fig3, echo=TRUE, fig.height=10,warning=FALSE}
+subdata[,c(29:35)] <- lapply(subdata[,c(29:35)], function(x) factor(x, 
+      labels = c("Less","Fine","More"))
+  )
+
+xlikgroup3b = likert(subdata[,c(29:35)], grouping = subdata$Curso)
+
+plot(xlikgroup3b, type = "bar", centered = T)
+#title(main = "Activities Length", xlab = "X axis", ylab = "Y axis", cex.main = 4,   font.main = 3)
+#legend("bottom",  c("Less","Fine","More"))
+```
+
+## Equipment
+
+```{r Fig4, echo=TRUE,warning=FALSE}
+subdata[,c(2:4)] <- lapply(subdata[,c(2:4)], function(x) factor(x, 
+      labels = c("Not at all","Disagree","OK","Agree","Completely Agree"))
+  )
+
+xlikgroup5a = likert(subdata[,c(2:4)], grouping = subdata$Curso)
+plot(xlikgroup5a, type = "bar", centered = T)
+
+```
+
+## Length and Schedule
+
+```{r Fig5, echo=TRUE, fig.height=5,warning=FALSE}
+subdata[,c(5:7)] <- lapply(subdata[,c(5:7)], function(x) factor(x, 
+      labels = c("Not at all","Disagree","OK","Agree","Completely Agree"))
+  )
+xlikgroup5b = likert(subdata[,c(5:7)], grouping = subdata$Curso)
+plot(xlikgroup5b, type = "bar", centered = T)
+
+```
+
+## Method Objectives
+
+```{r Fig6, echo=TRUE, fig.height=13,warning=FALSE}
+subdata[,c(13:21)] <- lapply(subdata[,c(13:21)], function(x) factor(x, 
+      labels = c("Not at all","Disagree","OK","Agree","Completely Agree"))
+  )
+xlikgroup5c = likert(subdata[,c(13:21)], grouping = subdata$Curso)
+plot(xlikgroup5c, type = "bar", centered = T)
+
+```
+
+## Activities Interest
+
+```{r Fig7, echo=TRUE, fig.height=9,warning=FALSE}
+subdata[,c(22:28)] <- lapply(subdata[,c(22:28)], function(x) factor(x, 
+      labels = c("Not at all","Disagree","OK","Agree","Completely Agree"))
+  )
+
+xlikgroup5d = likert(subdata[,c(22:28)], grouping = subdata$Curso)
+plot(xlikgroup5d, type = "bar", centered = T)
+
+```
+
+## Assessment
+
+```{r Fig8, echo=TRUE, fig.height=9,warning=FALSE}
+subdata[,c(36:41)] <- lapply(subdata[,c(36:41)], function(x) factor(x, 
+      labels = c("Not at all","Disagree","OK","Agree","Completely Agree"))
+  )
+
+xlikgroup5e = likert(subdata[,c(36:41)], grouping = subdata$Curso)
+plot(xlikgroup5e, type = "bar", centered = T)
+
+```
+
+## Learning Objectives
+
+```{r Fig9, echo=TRUE, fig.height=12,warning=FALSE}
+subdata[,c(43:50)] <- lapply(subdata[,c(42:50)], function(x) factor(x, 
+      labels = c("Not at all","Disagree","OK","Agree","Completely Agree"))
+  )
+
+xlikgroup5f = likert(subdata[,c(42:50)], grouping = subdata$Curso)
+plot(xlikgroup5f, type = "bar", centered = T)
+
+```
+
+## ELN
+
+```{r Fig10, echo=TRUE, fig.height=28,warning=FALSE}
+#subset to remove empty years
+subdata[,c(51:72)] <- lapply(subdata[,c(51:72)], function(x) factor(x, 
+      labels = c("Not at all","Disagree","OK","Agree","Completely Agree"))
+  )
+eln <- subset(subdata[,c(1,51:72)][subdata$Curso==2019|subdata$Curso==2020|subdata$Curso==2021|subdata$Curso==2022,])
+
+
+xlikgroup5g = likert(eln[2:23], grouping = eln$Curso)
+plot(xlikgroup5g, type = "bar", centered = T, title="ELN")
+```
+
+### Session Info
+
+```{r}
+sessionInfo()
+```
