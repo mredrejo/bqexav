@@ -6,7 +6,7 @@ format:
   html:
     toc: true
     toc-location: left
-    toc-depth: 3
+    toc-depth: 2
     number-sections: true
     code-overflow: wrap
     code-fold: true
@@ -196,6 +196,7 @@ for (i in 2:length(colnames(subdata))){
 for (i in 2:72){
   subdata[,i] <- factor(subdata[,i])
 }
+subdata$Curso <- factor(subdata$Curso,levels=c(2022,2021,2020,2019,2018,2017))
 #questions with 3 options
 #General Methodology
 subdata[,c(8:12)] <- lapply(subdata[,c(8:12)], function(x) factor(x, 

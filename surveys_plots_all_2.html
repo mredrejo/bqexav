@@ -112,7 +112,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
-  <ul>
+  <ul class="collapse">
   <li><a href="#contents-and-disclaimer" id="toc-contents-and-disclaimer" class="nav-link active" data-scroll-target="#contents-and-disclaimer"><span class="toc-section-number">1</span>  Contents and Disclaimer</a></li>
   <li><a href="#moodle-survey" id="toc-moodle-survey" class="nav-link" data-scroll-target="#moodle-survey"><span class="toc-section-number">2</span>  Moodle survey</a></li>
   <li><a href="#load-data-and-pairwise-t.test" id="toc-load-data-and-pairwise-t.test" class="nav-link" data-scroll-target="#load-data-and-pairwise-t.test"><span class="toc-section-number">3</span>  Load data and pairwise t.test</a></li>
@@ -127,10 +127,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#activities-interest" id="toc-activities-interest" class="nav-link" data-scroll-target="#activities-interest"><span class="toc-section-number">5.6</span>  Activities Interest</a></li>
   <li><a href="#assessment" id="toc-assessment" class="nav-link" data-scroll-target="#assessment"><span class="toc-section-number">5.7</span>  Assessment</a></li>
   <li><a href="#learning-objectives" id="toc-learning-objectives" class="nav-link" data-scroll-target="#learning-objectives"><span class="toc-section-number">5.8</span>  Learning Objectives</a></li>
-  <li><a href="#eln" id="toc-eln" class="nav-link" data-scroll-target="#eln"><span class="toc-section-number">5.9</span>  ELN</a>
-  <ul class="collapse">
-  <li><a href="#session-info" id="toc-session-info" class="nav-link" data-scroll-target="#session-info"><span class="toc-section-number">5.9.1</span>  Session Info</a></li>
-  </ul></li>
+  <li><a href="#eln" id="toc-eln" class="nav-link" data-scroll-target="#eln"><span class="toc-section-number">5.9</span>  ELN</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -1396,13 +1393,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">72</span>){</span>
 <span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  subdata[,i] <span class="ot">&lt;-</span> <span class="fu">factor</span>(subdata[,i])</span>
 <span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co">#questions with 3 options</span></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co">#General Methodology</span></span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>subdata[,<span class="fu">c</span>(<span class="dv">8</span><span class="sc">:</span><span class="dv">12</span>)] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(subdata[,<span class="fu">c</span>(<span class="dv">8</span><span class="sc">:</span><span class="dv">12</span>)], <span class="cf">function</span>(x) <span class="fu">factor</span>(x, </span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Traditional"</span>,<span class="st">"Same"</span>,<span class="st">"Open Question"</span>))</span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>xlikgroup3a <span class="ot">=</span> <span class="fu">likert</span>(subdata[,<span class="fu">c</span>(<span class="dv">8</span><span class="sc">:</span><span class="dv">12</span>)], <span class="at">grouping =</span> subdata<span class="sc">$</span>Curso)</span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(xlikgroup3a, <span class="at">type =</span> <span class="st">"bar"</span>, <span class="at">centered =</span> T) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>subdata<span class="sc">$</span>Curso <span class="ot">&lt;-</span> <span class="fu">factor</span>(subdata<span class="sc">$</span>Curso,<span class="at">levels=</span><span class="fu">c</span>(<span class="dv">2022</span>,<span class="dv">2021</span>,<span class="dv">2020</span>,<span class="dv">2019</span>,<span class="dv">2018</span>,<span class="dv">2017</span>))</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co">#questions with 3 options</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="co">#General Methodology</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>subdata[,<span class="fu">c</span>(<span class="dv">8</span><span class="sc">:</span><span class="dv">12</span>)] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(subdata[,<span class="fu">c</span>(<span class="dv">8</span><span class="sc">:</span><span class="dv">12</span>)], <span class="cf">function</span>(x) <span class="fu">factor</span>(x, </span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Traditional"</span>,<span class="st">"Same"</span>,<span class="st">"Open Question"</span>))</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>xlikgroup3a <span class="ot">=</span> <span class="fu">likert</span>(subdata[,<span class="fu">c</span>(<span class="dv">8</span><span class="sc">:</span><span class="dv">12</span>)], <span class="at">grouping =</span> subdata<span class="sc">$</span>Curso)</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(xlikgroup3a, <span class="at">type =</span> <span class="st">"bar"</span>, <span class="at">centered =</span> T) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="surveys_plots_all_2_files/figure-html/Fig2-1.png" class="img-fluid" width="672"></p>
