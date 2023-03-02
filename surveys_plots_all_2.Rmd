@@ -46,14 +46,14 @@ questions[c(4,10,56,63,63,64,65,66,67,72),5] <- "Neg."
 questions$type[questions$Section=="Open"] <- "NA"
 colnames(questions) <- c("No.","Since","Section","Question","Type")
 
-kbl(questions, align = "cccl", caption = "Table 1. Students opinion quizz. The bulk of the questionaire was designed for the year 2017 and new questions were added as indicated in the rightmost column.") %>%
+kbl(questions, align = "cccl", caption = "Table 1. Students opinion quizz. The bulk of the questionaire was designed for the year 2017 and new questions were added as indicated.") %>%
     kable_styling(bootstrap_options = "striped", full_width = F) %>%
     column_spec(1, italic = T)
 ```
 
 # Load data and pairwise t.test
 
-Survey responses were downloaded from Moodle as txt/csv files. Moodle updates caused some format differences that could be worked around after opening the files with Numbers and exporting them as tables with ";" as the column separator. We now show pairwise t-tests performed to detect significant differences in responses per year.
+Survey responses were downloaded from Moodle as txt/csv files. Moodle updates caused some format differences that could be worked around after opening the files with Numbers and exporting them as tables with ";" as the column separator. We now show all vs. all pairwise t-tests performed to detect significant differences in responses per year.
 
 ```{r warning=FALSE}
 #read the data in a list of dataframes

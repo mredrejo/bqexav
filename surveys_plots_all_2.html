@@ -186,14 +186,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>questions<span class="sc">$</span>type[questions<span class="sc">$</span>Section<span class="sc">==</span><span class="st">"Open"</span>] <span class="ot">&lt;-</span> <span class="st">"NA"</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(questions) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"No."</span>,<span class="st">"Since"</span>,<span class="st">"Section"</span>,<span class="st">"Question"</span>,<span class="st">"Type"</span>)</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">kbl</span>(questions, <span class="at">align =</span> <span class="st">"cccl"</span>, <span class="at">caption =</span> <span class="st">"Table 1. Students opinion quizz. The bulk of the questionaire was designed for the year 2017 and new questions were added as indicated in the rightmost column."</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">kbl</span>(questions, <span class="at">align =</span> <span class="st">"cccl"</span>, <span class="at">caption =</span> <span class="st">"Table 1. Students opinion quizz. The bulk of the questionaire was designed for the year 2017 and new questions were added as indicated."</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">"striped"</span>, <span class="at">full_width =</span> F) <span class="sc">%&gt;%</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">italic =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 
 <table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<caption>Table 1. Students opinion quizz. The bulk of the questionaire was designed for the year 2017 and new questions were added as indicated in the rightmost column.</caption>
+<caption>Table 1. Students opinion quizz. The bulk of the questionaire was designed for the year 2017 and new questions were added as indicated.</caption>
  <thead>
   <tr>
    <th style="text-align:center;"> No. </th>
@@ -751,7 +751,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="load-data-and-pairwise-t.test" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Load data and pairwise t.test</h1>
-<p>Survey responses were downloaded from Moodle as txt/csv files. Moodle updates caused some format differences that could be worked around after opening the files with Numbers and exporting them as tables with “;” as the column separator. We now show pairwise t-tests performed to detect significant differences in responses per year.</p>
+<p>Survey responses were downloaded from Moodle as txt/csv files. Moodle updates caused some format differences that could be worked around after opening the files with Numbers and exporting them as tables with “;” as the column separator. We now show all vs.&nbsp;all pairwise t-tests performed to detect significant differences in responses per year.</p>
 <div class="cell">
 <details>
 <summary>Show the code</summary>
