@@ -18,9 +18,10 @@ format:
 
 # Contents and Disclaimer
 
-This file contains the data from the course "Experimental Advanced Biochemistry I" (Biochemistry Degree, [Universidad Autónoma de Madrid](https://www.uam.es)). Surveys were filled by students in the years 2017-2022 directly on Moodle the last day of each course. This is a preliminary summary of the data analysis. The GitHub [repo](https://github.com/mredrejo/bqexav) contains the original files from all the analyses.
+This file contains the data from the "Experimental Advanced Biochemistry I" course (Biochemistry Degree, [Universidad Autónoma de Madrid](https://www.uam.es)). The questionnaires were completed by the students in 2017-2022 directly on Moodle on the last day of each course. This is a preliminary summary of the data analysis.  The GitHub [repo](https://github.com/mredrejo/bqexav) contains the original files of all analyzes.
 
-Data is shared under creative common license (CC BY-NC-ND 3.0 ES). Contact [modesto.redrejo\@uam.es](mailto:modesto.redrejo@uam.es) for further info.
+
+The data is made available under the Creative Common License (CC BY-NC-ND 3.0 ES).  Contact [modesto.redrejo\@uam.es](mailto:modesto.redrejo@uam.es) for more information.
 
 # Moodle survey
 
@@ -32,7 +33,7 @@ invisible(install.packages(unavailable))
 invisible(lapply(paquetes, library, character.only = TRUE))
 ```
 
-We are importing the data from the students answers in 5 years, between 2018-2022. The quiz consists on up to 77 questions, being 5 free-text questions (50, 51, 52, 75, 76 & 77), 7 three-options questions and the rest in Likert scale. The latter will be categorized as "Positive" or "Negative" if 5 ("Totally agree") means a "good" or "bad" feedback.
+We import data from student responses in 5 years, between 2018-2022. The quiz consists of up to 77 questions, including 5 free text questions (50, 51, 52, 75, 76 & 77), 7 questions with three options and the rest on a Likert scale. The latter are categorized as "Positive" or "Negative" where 5 ("strongly agree") means "Good" or "Bad" feedback.
 
 ```{r warning=FALSE}
 #load questions
@@ -52,7 +53,7 @@ kbl(questions, align = "cccl", caption = "Table 1. Students opinion quizz. The b
 
 # Load data and pairwise t.test
 
-Survey answers were downloaded from Moodle as txt/csv files. Moodle updates generated some format differences that could be bypassed after opening the files with Numbers and exporting as tables with ";" as column separator. We now show pairwise t.tests carried out to identify significant differences per year in the answers.
+Survey responses were downloaded from Moodle as txt/csv files. Moodle updates caused some format differences that could be worked around after opening the files with Numbers and exporting them as tables with ";" as the column separator. We now show pairwise t-tests performed to detect significant differences in responses per year.
 
 ```{r warning=FALSE}
 #read the data in a list of dataframes
@@ -79,11 +80,11 @@ colnames(data)[3] <- "Curso"
 
 #statistics analysis
 #subset questions 1: remove leftmost junk columns
-subdata <- data[,c(3,11:87)]
-names(subdata) <- c("Curso",paste0("Q",1:77))
+subdata_all <- data[,c(3,11:87)]
+names(subdata_all) <- c("Curso",paste0("Q",1:77))
 #subset questions 2: remove open questions
 open <- c(row.names(questions[questions$Section=="Open",]))
-subdata <- subdata[,-(as.integer(open)+1)]
+subdata <- subdata_all[,-(as.integer(open)+1)]
 subdata <- sapply(subdata,as.numeric)
 subdata <- as.data.frame(subdata)
 
@@ -107,7 +108,7 @@ for (i in 2:ncol(subdata)){
 
 # Boxplots
 
-Answers from each question are displayed in Boxplots by Year and significant differences from the overall answers are marked.
+Responses to each question are presented in boxplots by year, and significant differences from overall responses are marked.
 
 ```{r warning=FALSE}
 
@@ -177,7 +178,7 @@ plot[[9]]
 
 # Likert scale plots
 
-Answers in Likert scales are represented by sections in the quiz.
+Likert scale responses are represented by sections in the quiz.
 
 ## General Methodology
 

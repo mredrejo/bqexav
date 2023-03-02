@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Modesto">
-<meta name="dcterms.date" content="2023-03-01">
+<meta name="dcterms.date" content="2023-03-02">
 
 <title>BqExAvI Survey Analysis (2017-2022)</title>
 <style>
@@ -155,7 +155,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">March 1, 2023</p>
+      <p class="date">March 2, 2023</p>
     </div>
   </div>
   
@@ -167,12 +167,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <section id="contents-and-disclaimer" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Contents and Disclaimer</h1>
-<p>This file contains the data from the course “Experimental Advanced Biochemistry I” (Biochemistry Degree, <a href="https://www.uam.es">Universidad Autónoma de Madrid</a>). Surveys were filled by students in the years 2017-2022 directly on Moodle the last day of each course. This is a preliminary summary of the data analysis. The GitHub <a href="https://github.com/mredrejo/bqexav">repo</a> contains the original files from all the analyses.</p>
-<p>Data is shared under creative common license (CC BY-NC-ND 3.0 ES). Contact <a href="mailto:modesto.redrejo@uam.es">modesto.redrejo@uam.es</a> for further info.</p>
+<p>This file contains the data from the “Experimental Advanced Biochemistry I” course (Biochemistry Degree, <a href="https://www.uam.es">Universidad Autónoma de Madrid</a>). The questionnaires were completed by the students in 2017-2022 directly on Moodle on the last day of each course. This is a preliminary summary of the data analysis. The GitHub <a href="https://github.com/mredrejo/bqexav">repo</a> contains the original files of all analyzes.</p>
+<p>The data is made available under the Creative Common License (CC BY-NC-ND 3.0 ES). Contact <a href="mailto:modesto.redrejo@uam.es">modesto.redrejo@uam.es</a> for more information.</p>
 </section>
 <section id="moodle-survey" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Moodle survey</h1>
-<p>We are importing the data from the students answers in 5 years, between 2018-2022. The quiz consists on up to 77 questions, being 5 free-text questions (50, 51, 52, 75, 76 &amp; 77), 7 three-options questions and the rest in Likert scale. The latter will be categorized as “Positive” or “Negative” if 5 (“Totally agree”) means a “good” or “bad” feedback.</p>
+<p>We import data from student responses in 5 years, between 2018-2022. The quiz consists of up to 77 questions, including 5 free text questions (50, 51, 52, 75, 76 &amp; 77), 7 questions with three options and the rest on a Likert scale. The latter are categorized as “Positive” or “Negative” where 5 (“strongly agree”) means “Good” or “Bad” feedback.</p>
 <div class="cell">
 <details>
 <summary>Show the code</summary>
@@ -751,7 +751,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="load-data-and-pairwise-t.test" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Load data and pairwise t.test</h1>
-<p>Survey answers were downloaded from Moodle as txt/csv files. Moodle updates generated some format differences that could be bypassed after opening the files with Numbers and exporting as tables with “;” as column separator. We now show pairwise t.tests carried out to identify significant differences per year in the answers.</p>
+<p>Survey responses were downloaded from Moodle as txt/csv files. Moodle updates caused some format differences that could be worked around after opening the files with Numbers and exporting them as tables with “;” as the column separator. We now show pairwise t-tests performed to detect significant differences in responses per year.</p>
 <div class="cell">
 <details>
 <summary>Show the code</summary>
@@ -779,11 +779,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co">#statistics analysis</span></span>
 <span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co">#subset questions 1: remove leftmost junk columns</span></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>subdata <span class="ot">&lt;-</span> data[,<span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">11</span><span class="sc">:</span><span class="dv">87</span>)]</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(subdata) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Curso"</span>,<span class="fu">paste0</span>(<span class="st">"Q"</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">77</span>))</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>subdata_all <span class="ot">&lt;-</span> data[,<span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">11</span><span class="sc">:</span><span class="dv">87</span>)]</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(subdata_all) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Curso"</span>,<span class="fu">paste0</span>(<span class="st">"Q"</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">77</span>))</span>
 <span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co">#subset questions 2: remove open questions</span></span>
 <span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>open <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">row.names</span>(questions[questions<span class="sc">$</span>Section<span class="sc">==</span><span class="st">"Open"</span>,]))</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>subdata <span class="ot">&lt;-</span> subdata[,<span class="sc">-</span>(<span class="fu">as.integer</span>(open)<span class="sc">+</span><span class="dv">1</span>)]</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>subdata <span class="ot">&lt;-</span> subdata_all[,<span class="sc">-</span>(<span class="fu">as.integer</span>(open)<span class="sc">+</span><span class="dv">1</span>)]</span>
 <span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>subdata <span class="ot">&lt;-</span> <span class="fu">sapply</span>(subdata,as.numeric)</span>
 <span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>subdata <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(subdata)</span>
 <span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
@@ -1261,7 +1261,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="boxplots" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Boxplots</h1>
-<p>Answers from each question are displayed in Boxplots by Year and significant differences from the overall answers are marked.</p>
+<p>Responses to each question are presented in boxplots by year, and significant differences from overall responses are marked.</p>
 <div class="cell">
 <details>
 <summary>Show the code</summary>
@@ -1374,7 +1374,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="likert-scale-plots" class="level1" data-number="5">
 <h1 data-number="5"><span class="header-section-number">5</span> Likert scale plots</h1>
-<p>Answers in Likert scales are represented by sections in the quiz.</p>
+<p>Likert scale responses are represented by sections in the quiz.</p>
 <section id="general-methodology" class="level2" data-number="5.1">
 <h2 data-number="5.1" class="anchored" data-anchor-id="general-methodology"><span class="header-section-number">5.1</span> General Methodology</h2>
 <div class="cell">
