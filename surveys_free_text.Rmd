@@ -1,0 +1,242 @@
+---
+title: "BqExAvI Survey Analysis (2017-2022). Part II"
+author: "Modesto"
+date: "`r Sys.Date()`"
+format:
+  html:
+    page-layout: full
+    toc: true
+    toc-location: left
+    toc-depth: 2
+    number-sections: true
+    code-overflow: wrap
+    code-fold: true
+    code-summary: "Show the code"
+#output:
+#  pdf_document:
+#    latex_engine: xelatex
+---
+
+```{r setup, results='hide', message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#Load R libraries
+paquetes <- c("deeplr", "ggplot2", "BTM", "ggraph", "igraph", "dplyr", "akc","tidytext","udpipe","textrank","ggwordcloud","ggpubr")
+unavailable <- setdiff(paquetes, rownames(installed.packages()))
+install.packages(unavailable)
+lapply(paquetes, library, character.only = TRUE,quietly = TRUE)
+
+```
+
+# Contents and Disclaimer
+This page refers to student surveys of "Experimental Advanced Biochemistry I" course (Biochemistry Degree, [Universidad Autónoma de Madrid](https://www.uam.es)). Description of questionnaires and analysis of quantitative questions is [here](https://mredrejo.github.io/bqexav/). The GitHub [repo](https://github.com/mredrejo/bqexav) contains the original files of all analyzes.
+
+The data is made available under the Creative Common License (CC BY-NC-ND 3.0 ES).  Contact [modesto.redrejo\@uam.es](mailto:modesto.redrejo@uam.es) for more information.
+
+::: {.callout-warning}
+## Preliminary
+This is only a preliminary analysis.
+:::
+
+# Free-text questions
+
+Free-text questions (50, 51, 52, 75, 76, 77) will be processed to identify more common keywords and terms co-ocurrence. First, text are translated with `deeplr` package and save it into a new table.
+
+```{r translate, include=TRUE, eval=FALSE}
+#load the data
+data <- read.csv("merged_data.csv")
+#to deal with the deeplr words limit, each question is translated independently
+Q50 <- toEnglish2(data$Q50, auth_key = "9c9bf91e-f863-9406-d285-2f209fc1828d:fx")
+Q51 <- toEnglish2(data$Q51, auth_key = "9c9bf91e-f863-9406-d285-2f209fc1828d:fx")
+Q52 <- toEnglish2(data$Q52, auth_key = "9c9bf91e-f863-9406-d285-2f209fc1828d:fx")
+Q75 <- toEnglish2(na.omit(data$Q75), auth_key = "9c9bf91e-f863-9406-d285-2f209fc1828d:fx")
+Q76 <- toEnglish2(na.omit(data$Q76), auth_key = "9c9bf91e-f863-9406-d285-2f209fc1828d:fx")
+Q77 <- toEnglish2(na.omit(data$Q77), auth_key = "9c9bf91e-f863-9406-d285-2f209fc1828d:fx")
+#subset data and sweep sp to en
+data_en <- data[,c(2,52,53,54,77,78,79)]
+data_en$Q50 <- Q50
+data_en$Q51 <- Q51
+data_en$Q52 <- Q52
+data_en$Q75[which(!is.na(data_en$Q75))] <- Q75
+data_en$Q76[which(!is.na(data_en$Q76))] <- Q76
+data_en$Q77[which(!is.na(data_en$Q77))] <- Q77
+
+write.csv(data_en,"survey_open_en.csv")
+```
+
+Then, we processed the table and process it with `akc` and `udpipe` R packages. The code is largely based in an `akc` [tutorial](https://hope-data-science.github.io/akc/articles/tutorial_raw_text.html) and `updpipe` [extended vignette](https://cran.r-project.org/web/packages/udpipe/vignettes/udpipe-usecase-postagging-lemmatisation.html).
+
+Previously, but after some rounds of *try and error*, we also changed some words to unify terms (e.g. lab and laboratory, instructors' names, etc.). We found that the combination of the new `akc` package and `udpipe` achieved the best automatic term extraction with improved selection of key terms with reduced noise (conjunctions and other extra words). However, as `akc` is designed for text network-based classification which is beyond our scope, so we decided to implement `udpipe` network plot. Each plot contains the connections of the top-40 most common tokens.
+
+```{r i, fig.height=40,fig.width=8, warning=FALSE, message=FALSE}
+
+q_en <-  read.csv("survey_open_en.csv",row.names = NULL, stringsAsFactors = FALSE)
+
+#naif combination of some identical terms
+q_en  <- as.data.frame(sapply(q_en,tolower))
+q_en <- data.frame(apply(q_en, 2, function(x)  gsub('&nbsp;','',x)))
+q_en <- data.frame(apply(q_en, 2, function(x)  gsub('laboratory','lab',x)))
+q_en <- data.frame(apply(q_en, 2, function(x)  gsub('script','protocol',x)))
+q_en <- data.frame(apply(q_en, 2, function(x)  gsub('team','group',x)))
+q_en <- data.frame(apply(q_en, 2, function(x)  gsub('groupwork','group',x)))
+q_en <- data.frame(apply(q_en, 2, function(x)  gsub('learning','learn',x)))
+q_en <- data.frame(apply(q_en, 2, function(x)  gsub('sandra','assistants',x)))
+q_en <- data.frame(apply(q_en, 2, function(x)  gsub('barbara','assistants',x)))
+q_en <- data.frame(apply(q_en, 2, function(x)  gsub('barbara acosta','assistants',x)))
+q_en <- data.frame(apply(q_en, 2, function(x)  gsub('rojo','instructors',x)))
+#since "ana" is within some words, I changed "ANA" and "Ana Rojo" to rojo manually
+q_en <- data.frame(apply(q_en, 2, function(x)  gsub('luis','instructors',x)))
+q_en <- data.frame(apply(q_en, 2, function(x)  gsub('juan','instructors',x)))
+q_en <- data.frame(apply(q_en, 2, function(x)  gsub('modesto','instructors',x)))
+q_en <- data.frame(apply(q_en, 2, function(x)  gsub('benilde','instructors',x)))
+q_en <- data.frame(apply(q_en, 2, function(x)  gsub("\\\\","",x)))
+q_en <- data.frame(apply(q_en, 2, function(x)  gsub('oscar','instructors',x)))
+q_en <- data.frame(apply(q_en, 2, function(x)  gsub('teachers','instructors',x)))
+q_en <- data.frame(apply(q_en, 2, function(x)  gsub('internship','practices',x)))
+q_en <- data.frame(apply(q_en, 2, function(x)  gsub('internshipss','practices',x)))
+q_en <- data.frame(apply(q_en, 2, function(x)  gsub('script','protocol',x)))
+q_en <- data.frame(apply(q_en, 2, function(x)  gsub('notebooks','notebook',x)))
+
+#clean and extrack keywords
+#from https://hope-data-science.github.io/akc/articles/tutorial_raw_text.html
+# https://cran.r-project.org/web/packages/akc/vignettes/akc_vignette.html
+
+#model with udpipe & create dictionary   
+
+#download the model the first time
+#ud_model <- udpipe_download_model(language = "english")
+#ud_model <- udpipe_load_model(ud_model$file_model)
+#load the model from HD
+ud_model <- udpipe_load_model("/Users/modesto/Documents/GitHub/bqexav/english-ewt-ud-2.5-191206.udpipe")
+x <- list()
+Q <- c("Q50","Q51","Q52","Q75","Q76","Q77")
+for (i in 1:6){
+  x[[i]] <- as.data.frame(udpipe_annotate(ud_model, x = q_en[,i+2], tagger="default",parser="none"))
+  names(x)[[i]] <- Q[i]
+}
+
+
+# get stop words from `tidytext` package
+stop_words %>%
+    pull(word) %>%
+    unique() -> my_stopword
+
+#make dictionaries
+my_dict <- list()
+for (i in 1:6){
+  my_dict[[i]] <- make_dict(x[[i]]$lemma)
+  #names(my_dict)[[i]] <- Q[i]
+}
+
+#extract keywords with akc
+extracted_keywords <- list()
+for (i in 1:6){
+  q_en %>%
+    keyword_extract(id = "X",text = colnames(q_en)[i+2],
+    dict = my_dict[[i]],stopword = my_stopword) -> extracted_keywords[[i]]
+    names(extracted_keywords)[[i]] <- Q[i]
+}
+
+#clean data
+clean_data <- list()
+for (i in 1:6){
+  extracted_keywords[[i]] %>%
+    keyword_clean() -> clean_data[[i]]
+    names(clean_data)[[i]] <- Q[i]
+}
+
+
+
+#visualize network as in udpipe vignette
+
+#plot from akc extracted_keywords
+
+questions <- read.csv("questions_final.csv", head=TRUE, sep=",") #load questions
+titles <- questions[c(50,51,52,75,76,77),4]
+stats <- list()
+wordnetwork <- list()
+plotkey <- list()
+for (i in 1:6){
+  stats[[i]] <- cooccurrence(x = clean_data[[i]], 
+                     term = "keyword", group = "id")
+  wordnetwork[[i]] <- head(stats[[i]], 40)
+  wordnetwork[[i]] <- graph_from_data_frame(wordnetwork[[i]])
+  plotkey[[i]] <- ggraph(wordnetwork[[i]], layout = "fr") +
+    geom_edge_link(aes(width = cooc, edge_alpha = cooc), edge_colour = "indianred2") +
+    geom_node_text(aes(label = name), col = "darkgreen", size = 4) +
+    theme_graph(base_family = "Arial") +
+    theme(legend.position = "none") +
+    labs(title =titles[[i]], subtitle = "Cooccurrences within same sentence (Nouns & Adjective)")
+
+}
+#show the plots
+ggarrange(plotlist=plotkey,nrow=6,ncol=1)
+
+```
+
+# Answers per year
+
+Now we split the plots per year. To facilitate the understanding, we have selected the top-20 words.
+
+```{r fig.height=150,fig.width=8, warning=FALSE, message=FALSE}
+#extract keywords
+extracted_keywords <- list()
+indice <- matrix(1:36, byrow = TRUE, nrow = 6)
+for (i in 1:6){
+  for (j in 1:6){
+    tablita <-  q_en[q_en$Curso == 2016+j,]
+    if (any(is.na(tablita[,i+2][tablita$Curso == 2016+j]))) next
+    tablita %>%
+      keyword_extract(id = "X",text = colnames(tablita)[i+2],
+      dict = my_dict[[i]], stopword = my_stopword) -> extracted_keywords[[indice[i,j]]]
+      names(extracted_keywords)[[indice[i,j]]] <- Q[i]
+  }
+}
+
+
+#clean data
+clean_data <- list()
+for (i in 1:36){
+  if (is.null(extracted_keywords[[i]])) next
+  extracted_keywords[[i]] %>%
+    keyword_clean() -> clean_data[[i]]
+    names(clean_data)[[i]] <- Q[i]
+}
+
+
+
+#visualize
+
+#plot from akc extracted_keywords
+
+year <- rep(unique(q_en$Curso), 6)
+stats <- list()
+wordnetwork <- list()
+plotkey <- list()
+for (i in 1:36){
+  if (is.null(clean_data[[i]])) next
+  stats[[i]] <- cooccurrence(x = clean_data[[i]], 
+                     term = "keyword", group = "id")
+  wordnetwork[[i]] <- head(stats[[i]], 20)
+  wordnetwork[[i]] <- graph_from_data_frame(wordnetwork[[i]])
+  plotkey[[i]] <- ggraph(wordnetwork[[i]], layout = "fr") +
+    geom_edge_link(aes(width = cooc, edge_alpha = cooc), edge_colour = "indianred2") +
+    geom_node_text(aes(label = name), col = "darkgreen", size = 4) +
+    theme_graph(base_family = "Arial") +
+    theme(legend.position = "none") +
+    labs(title =paste0(titles[[ifelse( !(i %% 6==0),as.integer(i/6)+1,i/6)]], "- ",year[i]), subtitle = "Cooccurrences within same sentence (Nouns & Adjective)")
+}
+#show the plots
+plotyear <- Filter(Negate(is.null),plotkey)
+ggarrange(plotlist=plotyear,nrow=28,ncol=1)
+```
+# [Quantitative questions](index.html)
+
+
+
+### Session Info
+
+```{r}
+sessionInfo()
+```
+
+

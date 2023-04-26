@@ -1,0 +1,261 @@
+---
+title: "BqExAvI Survey Analysis (2017-2022)"
+author: "Modesto"
+date: "`r Sys.Date()`"
+format:
+  html:
+    page-layout: full
+    toc: true
+    toc-location: left
+    toc-depth: 2
+    number-sections: true
+    code-overflow: wrap
+    code-fold: true
+    code-summary: "Show the code"
+    link-external-icon: true
+    link-external-newwindow: true 
+#output:
+#  pdf_document:
+#    latex_engine: xelatex
+---
+
+# Contents and Disclaimer
+
+This file contains the data from the "Experimental Advanced Biochemistry I" course (Biochemistry Degree, [Universidad Autónoma de Madrid](https://www.uam.es)). The questionnaires were completed by the students in 2017-2022 directly on Moodle on the last day of each course. This is a preliminary summary of the data analysis.  The GitHub [repo](https://github.com/mredrejo/bqexav) contains the original files of all analyzes. This report only contains the data analysis and plots, without any results discussion.
+
+The data is made available under the Creative Common License (CC BY-NC-ND 3.0 ES).  Contact [modesto.redrejo\@uam.es](mailto:modesto.redrejo@uam.es) for more information.
+
+# Moodle survey
+
+```{r results='hide', message=FALSE, warning=FALSE}
+#Load/install requires packages
+paquetes <- c("ggplot2","data.table","kableExtra","corrplot","likert","ggpubr","heatmaply","reshape2","plotly","dplyr")
+unavailable <- setdiff(paquetes, rownames(installed.packages()))
+invisible(install.packages(unavailable))
+invisible(lapply(paquetes, library, character.only = TRUE))
+```
+
+We import data from student responses in 5 years, between 2018-2022. The quiz consists of up to 77 questions, including 5 free text questions (50, 51, 52, 75, 76 & 77), 7 questions with three options, and the rest as a 5-degrees *Likert* scale. 
+
+```{r warning=FALSE}
+#load questions
+questions <- read.csv("questions.csv", head=TRUE, sep=";")
+questions <- cbind(row.names(questions),questions[,c(3,1,2)])
+#add type variable
+questions$type <- "Pos."
+questions$type[questions$Section=="Open"] <- ""
+questions[c(4,10,56,63,63,64,65,66,67,72),5] <- "Neg."
+questions$type[questions$Section=="Open"] <- "NA"
+colnames(questions) <- c("No.","Since","Section","Question","Type")
+#write.csv(questions,"questions_final.csv", row.names=FALSE)
+
+#diplay the table
+kbl(questions[,1:4], align = "cccl", caption = "Table 1. Students opinion quizz. The bulk of the questionaire was designed for the year 2017 and new questions were added as indicated.") %>%
+    kable_styling(bootstrap_options = "striped", full_width = F) %>%
+    column_spec(1, italic = T)
+```
+
+# Load data and pairwise t.test
+
+Survey responses were downloaded from Moodle as txt/csv files. Moodle updates caused some format differences that could be worked around after opening the files with Numbers and exporting them as tables with ";" as the column separator. We now show all vs. all pairwise t-tests performed to detect significant differences in responses per year. 
+The tables below contain the pairwise p-values for each comparison, with significant values highlighted in blue (p<0.05) and red (p<0.01)
+
+```{r warning=FALSE, results='asis'}
+
+#read the data in a list of dataframes
+#didn't use the headers to avoid mistakes
+quiz <- lapply(2017:2022, function(x) read.csv(paste0("survey",x,".csv"),header=FALSE,skip=1,sep=";"))
+#add Year as the third variable (empty so far)
+curso <- c("2017","2018","2019","2020","2021","2022")
+for (i in 1:length(quiz)){
+  quiz[[i]][,3] <- curso[i]
+}
+
+#adjust questions changes
+#remove questions in column 32 & 40 from 2017, because we removed it in the following years
+quiz[[1]] <- quiz[[1]][,-c(32,40)]
+quiz[[6]] <- quiz[[6]][,-10]
+names(quiz[[6]]) <- names(quiz[[5]])
+names(quiz[[1]]) <- names(quiz[[2]])
+#merge all dataframes and name the columns 
+data <- Reduce(function(x, y) merge(x, y, all=TRUE), quiz)
+#take the colnames from the last quiz that contains all the questions
+
+colnames(data)[3] <- "Curso"
+
+
+#statistics analysis
+#subset questions 1/2: remove leftmost junk columns
+subdata_all <- data[,c(3,11:87)]
+names(subdata_all) <- c("Curso",paste0("Q",1:77))
+#write.csv(subdata_all, "merged_data.csv")
+
+#subset questions 2/2: remove open questions
+open <- c(row.names(questions[questions$Section=="Open",]))
+subdata <- subdata_all[,-(as.integer(open)+1)]
+subdata <- sapply(subdata,as.numeric)
+subdata <- as.data.frame(subdata)
+
+#perform tests and display table in a loop
+tests <- list()
+nombres <- c()
+
+for (i in 2:ncol(subdata)){
+  subdata[,i][!(subdata[,i] %in% c(1,2,3,4,5))] <- NA
+  #subset for years with answers to avoid void groups
+  kkk <- subset(subdata,!is.na(subdata[,i]))
+  tests[[i-1]] <- pairwise.t.test(x=as.numeric(kkk[,i]),g=as.numeric(kkk[,1]),paired = F)
+  nombres[i-1] <- questions[,4][(which(questions$No. %in% gsub("\\D", "",colnames(subdata[i]))))]
+  names(tests) <- nombres
+  print(as.data.frame(format(tests[[i-1]]$p.value, scientific=F,nsmall=6)) %>% replace(., . < 0, "") %>%
+    mutate_all(~cell_spec(.x, color = ifelse(.x < 0.01, "firebrick", ifelse(.x < 0.05, "steelblue",
+        "black")))) %>%
+    kable(escape = F, align = "cccl", caption =paste("<b>",names(tests[i-1]),"</b>"), digits=4)  %>%
+    kable_styling(bootstrap_options = "striped", full_width = F, position = "center") %>%
+    column_spec(1, bold = T))
+  
+  
+  
+}
+
+```
+
+
+# Likert scale plots
+
+*Likert* scale responses are grouped by the sections in the quiz.
+
+## General Methodology
+
+```{r Fig2, echo=TRUE, fig.height=7,warning=FALSE}
+
+#lickert
+#change question names
+tablita <- data.frame(matrix(NA,    # Create empty data frame
+                          nrow = length(colnames(subdata)),
+                          ncol = 2))
+for (i in 2:length(colnames(subdata))){
+  tablita[i-1,] <- cbind(colnames(subdata[i]),questions$Question[as.numeric(gsub("\\D", "",colnames(subdata[i])))])
+  colnames(subdata)[i] <- tablita[i-1,2]
+}
+
+for (i in 2:72){
+  subdata[,i] <- factor(subdata[,i])
+}
+subdata$Curso <- factor(subdata$Curso,levels=c(2022,2021,2020,2019,2018,2017))
+#questions with 3 options
+#General Methodology
+subdata[,c(8:12)] <- lapply(subdata[,c(8:12)], function(x) factor(x, 
+      labels = c("Traditional","Same","Open Question"))
+  )
+xlikgroup3a = likert(subdata[,c(8:12)], grouping = subdata$Curso)
+plot(xlikgroup3a, type = "bar", centered = T) 
+```
+
+## Activities Length
+
+```{r Fig3, echo=TRUE, fig.height=10,warning=FALSE}
+subdata[,c(29:35)] <- lapply(subdata[,c(29:35)], function(x) factor(x, 
+      labels = c("Less","Fine","More"))
+  )
+
+xlikgroup3b = likert(subdata[,c(29:35)], grouping = subdata$Curso)
+
+plot(xlikgroup3b, type = "bar", centered = T)
+#title(main = "Activities Length", xlab = "X axis", ylab = "Y axis", cex.main = 4,   font.main = 3)
+#legend("bottom",  c("Less","Fine","More"))
+```
+
+## Equipment
+
+```{r Fig4, echo=TRUE,warning=FALSE}
+subdata[,c(2:4)] <- lapply(subdata[,c(2:4)], function(x) factor(x, 
+      labels = c("Not at all","Disagree","OK","Agree","Completely Agree"))
+  )
+
+xlikgroup5a = likert(subdata[,c(2:4)], grouping = subdata$Curso)
+plot(xlikgroup5a, type = "bar", centered = T)
+
+```
+
+## Length and Schedule
+
+```{r Fig5, echo=TRUE, fig.height=5,warning=FALSE}
+subdata[,c(5:7)] <- lapply(subdata[,c(5:7)], function(x) factor(x, 
+      labels = c("Not at all","Disagree","OK","Agree","Completely Agree"))
+  )
+xlikgroup5b = likert(subdata[,c(5:7)], grouping = subdata$Curso)
+plot(xlikgroup5b, type = "bar", centered = T)
+
+```
+
+## Method Objectives
+
+```{r Fig6, echo=TRUE, fig.height=13,warning=FALSE}
+subdata[,c(13:21)] <- lapply(subdata[,c(13:21)], function(x) factor(x, 
+      labels = c("Not at all","Disagree","OK","Agree","Completely Agree"))
+  )
+xlikgroup5c = likert(subdata[,c(13:21)], grouping = subdata$Curso)
+plot(xlikgroup5c, type = "bar", centered = T)
+
+```
+
+## Activities Interest
+
+```{r Fig7, echo=TRUE, fig.height=11, warning=FALSE}
+subdata[,c(22:28)] <- lapply(subdata[,c(22:28)], function(x) factor(x, 
+      labels = c("Not at all","Disagree","OK","Agree","Completely Agree"))
+  )
+
+xlikgroup5d = likert(subdata[,c(22:28)], grouping = subdata$Curso)
+plot(xlikgroup5d, type = "bar", centered = T)
+
+```
+
+## Assessment
+
+```{r Fig8, echo=TRUE, fig.height=9,warning=FALSE}
+subdata[,c(36:41)] <- lapply(subdata[,c(36:41)], function(x) factor(x, 
+      labels = c("Not at all","Disagree","OK","Agree","Completely Agree"))
+  )
+
+xlikgroup5e = likert(subdata[,c(36:41)], grouping = subdata$Curso)
+plot(xlikgroup5e, type = "bar", centered = T)
+
+```
+
+## Learning Objectives
+
+```{r Fig9, echo=TRUE, fig.height=12,warning=FALSE}
+subdata[,c(43:50)] <- lapply(subdata[,c(42:50)], function(x) factor(x, 
+      labels = c("Not at all","Disagree","OK","Agree","Completely Agree"))
+  )
+
+xlikgroup5f = likert(subdata[,c(42:50)], grouping = subdata$Curso)
+plot(xlikgroup5f, type = "bar", centered = T)
+
+```
+
+## ELN
+
+```{r Fig10, echo=TRUE, fig.height=28,warning=FALSE}
+#subset to remove empty years
+subdata[,c(51:72)] <- lapply(subdata[,c(51:72)], function(x) factor(x, 
+      labels = c("Not at all","Disagree","OK","Agree","Completely Agree"))
+  )
+eln <- subset(subdata[,c(1,51:72)][subdata$Curso==2019|subdata$Curso==2020|subdata$Curso==2021|subdata$Curso==2022,])
+
+
+xlikgroup5g = likert(eln[2:23], grouping = eln$Curso)
+plot(xlikgroup5g, type = "bar", centered = T, title="ELN")
+```
+
+# [Open questions](surveys_free_text.html)
+
+Free-text questions have been analyzed independently by automatic text *lemmatization* and plot methods. The detailed report can be found [here](surveys_free_text.html).
+
+### Session Info
+
+```{r}
+sessionInfo()
+```

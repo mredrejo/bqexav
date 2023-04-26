@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Modesto">
-<meta name="dcterms.date" content="2023-04-24">
+<meta name="dcterms.date" content="2023-04-26">
 
 <title>BqExAvI Survey Analysis (2017-2022). Part II</title>
 <style>
@@ -110,8 +110,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul class="collapse">
-  <li><a href="#free-text-questions" id="toc-free-text-questions" class="nav-link active" data-scroll-target="#free-text-questions"><span class="toc-section-number">1</span>  Free-text questions</a></li>
-  <li><a href="#answers-per-year" id="toc-answers-per-year" class="nav-link" data-scroll-target="#answers-per-year"><span class="toc-section-number">2</span>  Answers per year</a></li>
+  <li><a href="#contents-and-disclaimer" id="toc-contents-and-disclaimer" class="nav-link active" data-scroll-target="#contents-and-disclaimer"><span class="toc-section-number">1</span>  Contents and Disclaimer</a></li>
+  <li><a href="#free-text-questions" id="toc-free-text-questions" class="nav-link" data-scroll-target="#free-text-questions"><span class="toc-section-number">2</span>  Free-text questions</a></li>
+  <li><a href="#answers-per-year" id="toc-answers-per-year" class="nav-link" data-scroll-target="#answers-per-year"><span class="toc-section-number">3</span>  Answers per year</a></li>
+  <li><a href="#quantitative-questions" id="toc-quantitative-questions" class="nav-link" data-scroll-target="#quantitative-questions"><span class="toc-section-number">4</span>  Quantitative questions</a></li>
   </ul>
 </nav>
 </div>
@@ -138,7 +140,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 24, 2023</p>
+      <p class="date">April 26, 2023</p>
     </div>
   </div>
   
@@ -159,7 +161,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(paquetes, library, <span class="at">character.only =</span> <span class="cn">TRUE</span>,<span class="at">quietly =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>This page refers to student surveys of “Experimental Advanced Biochemistry I” course (Biochemistry Degree, <a href="https://www.uam.es">Universidad Autónoma de Madrid</a>). Description of questionnaires and analysis of quantitative questions is <a href="https://mredrejo.github.io/bqexav/">here</a>.</p>
+<section id="contents-and-disclaimer" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Contents and Disclaimer</h1>
+<p>This page refers to student surveys of “Experimental Advanced Biochemistry I” course (Biochemistry Degree, <a href="https://www.uam.es">Universidad Autónoma de Madrid</a>). Description of questionnaires and analysis of quantitative questions is <a href="https://mredrejo.github.io/bqexav/">here</a>. The GitHub <a href="https://github.com/mredrejo/bqexav">repo</a> contains the original files of all analyzes.</p>
+<p>The data is made available under the Creative Common License (CC BY-NC-ND 3.0 ES). Contact <a href="mailto:modesto.redrejo@uam.es">modesto.redrejo@uam.es</a> for more information.</p>
 <div class="callout-warning callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -173,9 +178,10 @@ Preliminary
 <p>This is only a preliminary analysis.</p>
 </div>
 </div>
-<section id="free-text-questions" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Free-text questions</h1>
-<p>Free-text questions (50, 51, 52, 75, 76, 77) will be processed to identify more common keywords and terms coocurrence. First, text are translated with <code>deeplr</code> package and save it into a new table.</p>
+</section>
+<section id="free-text-questions" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Free-text questions</h1>
+<p>Free-text questions (50, 51, 52, 75, 76, 77) will be processed to identify more common keywords and terms co-ocurrence. First, text are translated with <code>deeplr</code> package and save it into a new table.</p>
 <div class="cell">
 <details>
 <summary>Show the code</summary>
@@ -201,7 +207,7 @@ Preliminary
 </details>
 </div>
 <p>Then, we processed the table and process it with <code>akc</code> and <code>udpipe</code> R packages. The code is largely based in an <code>akc</code> <a href="https://hope-data-science.github.io/akc/articles/tutorial_raw_text.html">tutorial</a> and <code>updpipe</code> <a href="https://cran.r-project.org/web/packages/udpipe/vignettes/udpipe-usecase-postagging-lemmatisation.html">extended vignette</a>.</p>
-<p>Previously, but after some rounds of <em>try and error</em>, we also changed some words to unify terms (e.g.&nbsp;lab and laboratory, instructors’ names, etc.). We use <code>akc</code> package to carry out automatic term extraction because it does very competent selection of key terms with reduced noise (conjunctions and other extra words). However, <code>akc</code> is designed for text network-based classification which is beyond our scope, so we decided to implement <code>udpipe</code> network plot. Each plot contains the connections of the top-40 most common tokens.</p>
+<p>Previously, but after some rounds of <em>try and error</em>, we also changed some words to unify terms (e.g.&nbsp;lab and laboratory, instructors’ names, etc.). We found that the combination of the new <code>akc</code> package and <code>udpipe</code> achieved the best automatic term extraction with improved selection of key terms with reduced noise (conjunctions and other extra words). However, as <code>akc</code> is designed for text network-based classification which is beyond our scope, so we decided to implement <code>udpipe</code> network plot. Each plot contains the connections of the top-40 most common tokens.</p>
 <div class="cell">
 <details>
 <summary>Show the code</summary>
@@ -246,7 +252,7 @@ Preliminary
 <span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
 <span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>Q <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Q50"</span>,<span class="st">"Q51"</span>,<span class="st">"Q52"</span>,<span class="st">"Q75"</span>,<span class="st">"Q76"</span>,<span class="st">"Q77"</span>)</span>
 <span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>){</span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>  x[[i]] <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">udpipe_annotate</span>(ud_model, <span class="at">x =</span> q_en[,i<span class="sc">+</span><span class="dv">2</span>]))</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>  x[[i]] <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">udpipe_annotate</span>(ud_model, <span class="at">x =</span> q_en[,i<span class="sc">+</span><span class="dv">2</span>], <span class="at">tagger=</span><span class="st">"default"</span>,<span class="at">parser=</span><span class="st">"none"</span>))</span>
 <span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(x)[[i]] <span class="ot">&lt;-</span> Q[i]</span>
 <span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a></span>
@@ -263,7 +269,7 @@ Preliminary
 <span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>  <span class="co">#names(my_dict)[[i]] &lt;- Q[i]</span></span>
 <span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="co">#extract keywords</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="co">#extract keywords with akc</span></span>
 <span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>extracted_keywords <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
 <span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>){</span>
 <span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>  q_en <span class="sc">%&gt;%</span></span>
@@ -272,49 +278,48 @@ Preliminary
 <span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(extracted_keywords)[[i]] <span class="ot">&lt;-</span> Q[i]</span>
 <span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a><span class="co">#clean data</span></span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>clean_data <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>){</span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>  extracted_keywords[[i]] <span class="sc">%&gt;%</span></span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>    <span class="fu">keyword_clean</span>() <span class="ot">-&gt;</span> clean_data[[i]]</span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(clean_data)[[i]] <span class="ot">&lt;-</span> Q[i]</span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a><span class="co">#clean data</span></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>clean_data <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>){</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>  extracted_keywords[[i]] <span class="sc">%&gt;%</span></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>    <span class="fu">keyword_clean</span>() <span class="ot">-&gt;</span> clean_data[[i]]</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(clean_data)[[i]] <span class="ot">&lt;-</span> Q[i]</span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="co">#visualize</span></span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a><span class="co">#plot from akc extracted_keywords</span></span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>questions <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"questions_final.csv"</span>, <span class="at">head=</span><span class="cn">TRUE</span>, <span class="at">sep=</span><span class="st">","</span>) <span class="co">#load questions</span></span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>titles <span class="ot">&lt;-</span> questions[<span class="fu">c</span>(<span class="dv">50</span>,<span class="dv">51</span>,<span class="dv">52</span>,<span class="dv">75</span>,<span class="dv">76</span>,<span class="dv">77</span>),<span class="dv">4</span>]</span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>stats <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>wordnetwork <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>plotkey <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>){</span>
-<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>  stats[[i]] <span class="ot">&lt;-</span> <span class="fu">cooccurrence</span>(<span class="at">x =</span> clean_data[[i]], </span>
-<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>                     <span class="at">term =</span> <span class="st">"keyword"</span>, <span class="at">group =</span> <span class="st">"id"</span>)</span>
-<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>  wordnetwork[[i]] <span class="ot">&lt;-</span> <span class="fu">head</span>(stats[[i]], <span class="dv">40</span>)</span>
-<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>  wordnetwork[[i]] <span class="ot">&lt;-</span> <span class="fu">graph_from_data_frame</span>(wordnetwork[[i]])</span>
-<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>  plotkey[[i]] <span class="ot">&lt;-</span> <span class="fu">ggraph</span>(wordnetwork[[i]], <span class="at">layout =</span> <span class="st">"fr"</span>) <span class="sc">+</span></span>
-<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_edge_link</span>(<span class="fu">aes</span>(<span class="at">width =</span> cooc, <span class="at">edge_alpha =</span> cooc), <span class="at">edge_colour =</span> <span class="st">"indianred2"</span>) <span class="sc">+</span></span>
-<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_node_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> name), <span class="at">col =</span> <span class="st">"darkgreen"</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
-<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_graph</span>(<span class="at">base_family =</span> <span class="st">"Arial"</span>) <span class="sc">+</span></span>
-<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
-<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span>titles[[i]], <span class="at">subtitle =</span> <span class="st">"Cooccurrences within same sentence (Nouns &amp; Adjective)"</span>)</span>
-<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a><span class="co">#show the plots</span></span>
-<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(<span class="at">plotlist=</span>plotkey,<span class="at">nrow=</span><span class="dv">6</span>,<span class="at">ncol=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="co">#visualize network as in udpipe vignette</span></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a><span class="co">#plot from akc extracted_keywords</span></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>questions <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"questions_final.csv"</span>, <span class="at">head=</span><span class="cn">TRUE</span>, <span class="at">sep=</span><span class="st">","</span>) <span class="co">#load questions</span></span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>titles <span class="ot">&lt;-</span> questions[<span class="fu">c</span>(<span class="dv">50</span>,<span class="dv">51</span>,<span class="dv">52</span>,<span class="dv">75</span>,<span class="dv">76</span>,<span class="dv">77</span>),<span class="dv">4</span>]</span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>stats <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>wordnetwork <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>plotkey <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>){</span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>  stats[[i]] <span class="ot">&lt;-</span> <span class="fu">cooccurrence</span>(<span class="at">x =</span> clean_data[[i]], </span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>                     <span class="at">term =</span> <span class="st">"keyword"</span>, <span class="at">group =</span> <span class="st">"id"</span>)</span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>  wordnetwork[[i]] <span class="ot">&lt;-</span> <span class="fu">head</span>(stats[[i]], <span class="dv">40</span>)</span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>  wordnetwork[[i]] <span class="ot">&lt;-</span> <span class="fu">graph_from_data_frame</span>(wordnetwork[[i]])</span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>  plotkey[[i]] <span class="ot">&lt;-</span> <span class="fu">ggraph</span>(wordnetwork[[i]], <span class="at">layout =</span> <span class="st">"fr"</span>) <span class="sc">+</span></span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_edge_link</span>(<span class="fu">aes</span>(<span class="at">width =</span> cooc, <span class="at">edge_alpha =</span> cooc), <span class="at">edge_colour =</span> <span class="st">"indianred2"</span>) <span class="sc">+</span></span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_node_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> name), <span class="at">col =</span> <span class="st">"darkgreen"</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_graph</span>(<span class="at">base_family =</span> <span class="st">"Arial"</span>) <span class="sc">+</span></span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span>titles[[i]], <span class="at">subtitle =</span> <span class="st">"Cooccurrences within same sentence (Nouns &amp; Adjective)"</span>)</span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a><span class="co">#show the plots</span></span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(<span class="at">plotlist=</span>plotkey,<span class="at">nrow=</span><span class="dv">6</span>,<span class="at">ncol=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="surveys_free_text_files/figure-html/i-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 </section>
-<section id="answers-per-year" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Answers per year</h1>
+<section id="answers-per-year" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Answers per year</h1>
 <p>Now we split the plots per year. To facilitate the understanding, we have selected the top-20 words.</p>
 <div class="cell">
 <details>
@@ -374,6 +379,65 @@ Preliminary
 <p><img src="surveys_free_text_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
+</section>
+<section id="quantitative-questions" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> <a href="index.html">Quantitative questions</a></h1>
+<section id="session-info" class="level3" data-number="4.0.1">
+<h3 data-number="4.0.1" class="anchored" data-anchor-id="session-info"><span class="header-section-number">4.0.1</span> Session Info</h3>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>R version 4.2.2 (2022-10-31)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Big Sur ... 10.16
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] ggpubr_0.6.0      ggwordcloud_0.5.0 textrank_0.3.1    udpipe_0.8.11    
+ [5] tidytext_0.4.1    akc_0.9.9         dplyr_1.1.1       igraph_1.4.2     
+ [9] ggraph_2.1.0      BTM_0.3.7         ggplot2_3.4.2     deeplr_2.0.0     
+
+loaded via a namespace (and not attached):
+ [1] viridis_0.6.2        httr_1.4.5           tidyr_1.3.0         
+ [4] tidygraph_1.2.3      jsonlite_1.8.4       viridisLite_0.4.1   
+ [7] carData_3.0-5        yaml_2.3.7           tidyfst_1.7.6       
+[10] ggrepel_0.9.3        pillar_1.9.0         backports_1.4.1     
+[13] lattice_0.21-8       glue_1.6.2           digest_0.6.31       
+[16] ggsignif_0.6.4       polyclip_1.10-4      colorspace_2.1-0    
+[19] cowplot_1.1.1        htmltools_0.5.5      Matrix_1.5-4        
+[22] pkgconfig_2.0.3      textstem_0.1.4       broom_1.0.4         
+[25] purrr_1.0.1          scales_1.2.1         tweenr_2.0.2        
+[28] ggforce_0.4.1        tibble_3.2.1         car_3.1-2           
+[31] generics_0.1.3       farver_2.1.1         withr_2.5.0         
+[34] fst_0.9.8            cli_3.6.1            magrittr_2.0.3      
+[37] evaluate_0.20        tokenizers_0.3.0     janeaustenr_1.0.0   
+[40] fansi_1.0.4          SnowballC_0.7.0      MASS_7.3-58.3       
+[43] rstatix_0.7.2        koRpus_0.13-8        tools_4.2.2         
+[46] data.table_1.14.8    lifecycle_1.0.3      stringr_1.5.0       
+[49] munsell_0.5.0        compiler_4.2.2       rlang_1.1.0         
+[52] grid_4.2.2           fstcore_0.9.14       rstudioapi_0.14     
+[55] htmlwidgets_1.6.2    labeling_0.4.2       rmarkdown_2.21      
+[58] koRpus.lang.en_0.1-4 sylly_0.1-6          gtable_0.3.3        
+[61] abind_1.4-5          graphlayouts_0.8.4   R6_2.5.1            
+[64] gridExtra_2.3        sylly.en_0.1-3       knitr_1.42          
+[67] fastmap_1.1.1        utf8_1.2.3           stringi_1.7.12      
+[70] parallel_4.2.2       Rcpp_1.0.10          vctrs_0.6.1         
+[73] png_0.1-8            tidyselect_1.2.0     xfun_0.38           </code></pre>
+</div>
+</div>
+</section>
 </section>
 
 </main>
