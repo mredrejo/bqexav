@@ -39,7 +39,7 @@ This is only a preliminary analysis.
 
 # Free-text questions
 
-Free-text questions (50, 51, 52, 75, 76, 77) will be processed to identify more common keywords and terms co-ocurrence. First, text are translated with `deeplr` package and save it into a new table.
+The list of questions is available in the companion [report](index.html#moodle-survey). Free-text questions (50, 51, 52, 75, 76, 77) will be processed to identify more common keywords and terms co-ocurrence. First, text are translated with `deeplr` package and save it into a new table.
 
 ```{r translate, include=TRUE, eval=FALSE}
 #load the data
@@ -83,6 +83,7 @@ q_en <- data.frame(apply(q_en, 2, function(x)  gsub('sandra','assistants',x)))
 q_en <- data.frame(apply(q_en, 2, function(x)  gsub('barbara','assistants',x)))
 q_en <- data.frame(apply(q_en, 2, function(x)  gsub('barbara acosta','assistants',x)))
 q_en <- data.frame(apply(q_en, 2, function(x)  gsub('rojo','instructors',x)))
+q_en <- data.frame(apply(q_en, 2, function(x)  gsub(' ana ', 'instructors',x)))
 #since "ana" is within some words, I changed "ANA" and "Ana Rojo" to rojo manually
 q_en <- data.frame(apply(q_en, 2, function(x)  gsub('luis','instructors',x)))
 q_en <- data.frame(apply(q_en, 2, function(x)  gsub('juan','instructors',x)))
@@ -162,10 +163,10 @@ for (i in 1:6){
   wordnetwork[[i]] <- graph_from_data_frame(wordnetwork[[i]])
   plotkey[[i]] <- ggraph(wordnetwork[[i]], layout = "fr") +
     geom_edge_link(aes(width = cooc, edge_alpha = cooc), edge_colour = "indianred2") +
-    geom_node_text(aes(label = name), col = "darkgreen", size = 4) +
-    theme_graph(base_family = "Arial") +
+    geom_node_text(aes(label = name), col = "darkgreen", size = 7, repel=T,box.padding=0.06) +
+    theme_graph(base_family = "Arial", plot_margin = margin(0, 30, 0, 30)) +
     theme(legend.position = "none") +
-    labs(title =titles[[i]], subtitle = "Cooccurrences within same sentence (Nouns & Adjective)")
+    labs(title =titles[[i]], subtitle = "Cooccurrences within same sentence (Nouns & Adjective)") 
 
 }
 #show the plots
@@ -220,8 +221,8 @@ for (i in 1:36){
   wordnetwork[[i]] <- graph_from_data_frame(wordnetwork[[i]])
   plotkey[[i]] <- ggraph(wordnetwork[[i]], layout = "fr") +
     geom_edge_link(aes(width = cooc, edge_alpha = cooc), edge_colour = "indianred2") +
-    geom_node_text(aes(label = name), col = "darkgreen", size = 4) +
-    theme_graph(base_family = "Arial") +
+    geom_node_text(aes(label = name), col = "darkgreen", size = 6,repel=T,box.padding=0.06) +
+    theme_graph(base_family = "Arial", plot_margin = margin(0, 15, 0, 15)) +
     theme(legend.position = "none") +
     labs(title =paste0(titles[[ifelse( !(i %% 6==0),as.integer(i/6)+1,i/6)]], "- ",year[i]), subtitle = "Cooccurrences within same sentence (Nouns & Adjective)")
 }

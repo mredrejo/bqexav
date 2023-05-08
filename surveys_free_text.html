@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Modesto">
-<meta name="dcterms.date" content="2023-04-26">
+<meta name="dcterms.date" content="2023-05-08">
 
 <title>BqExAvI Survey Analysis (2017-2022). Part II</title>
 <style>
@@ -140,7 +140,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 26, 2023</p>
+      <p class="date">May 8, 2023</p>
     </div>
   </div>
   
@@ -181,7 +181,7 @@ Preliminary
 </section>
 <section id="free-text-questions" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Free-text questions</h1>
-<p>Free-text questions (50, 51, 52, 75, 76, 77) will be processed to identify more common keywords and terms co-ocurrence. First, text are translated with <code>deeplr</code> package and save it into a new table.</p>
+<p>The list of questions is available in the companion <a href="index.html#moodle-survey">report</a>. Free-text questions (50, 51, 52, 75, 76, 77) will be processed to identify more common keywords and terms co-ocurrence. First, text are translated with <code>deeplr</code> package and save it into a new table.</p>
 <div class="cell">
 <details>
 <summary>Show the code</summary>
@@ -225,93 +225,94 @@ Preliminary
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'barbara'</span>,<span class="st">'assistants'</span>,x)))</span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'barbara acosta'</span>,<span class="st">'assistants'</span>,x)))</span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'rojo'</span>,<span class="st">'instructors'</span>,x)))</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#since "ana" is within some words, I changed "ANA" and "Ana Rojo" to rojo manually</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'luis'</span>,<span class="st">'instructors'</span>,x)))</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'juan'</span>,<span class="st">'instructors'</span>,x)))</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'modesto'</span>,<span class="st">'instructors'</span>,x)))</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'benilde'</span>,<span class="st">'instructors'</span>,x)))</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">"</span><span class="sc">\\\\</span><span class="st">"</span>,<span class="st">""</span>,x)))</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'oscar'</span>,<span class="st">'instructors'</span>,x)))</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'teachers'</span>,<span class="st">'instructors'</span>,x)))</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'internship'</span>,<span class="st">'practices'</span>,x)))</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'internshipss'</span>,<span class="st">'practices'</span>,x)))</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'script'</span>,<span class="st">'protocol'</span>,x)))</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'notebooks'</span>,<span class="st">'notebook'</span>,x)))</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co">#clean and extrack keywords</span></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="co">#from https://hope-data-science.github.io/akc/articles/tutorial_raw_text.html</span></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co"># https://cran.r-project.org/web/packages/akc/vignettes/akc_vignette.html</span></span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="co">#model with udpipe &amp; create dictionary   </span></span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="co">#download the model the first time</span></span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="co">#ud_model &lt;- udpipe_download_model(language = "english")</span></span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="co">#ud_model &lt;- udpipe_load_model(ud_model$file_model)</span></span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="co">#load the model from HD</span></span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>ud_model <span class="ot">&lt;-</span> <span class="fu">udpipe_load_model</span>(<span class="st">"/Users/modesto/Documents/GitHub/bqexav/english-ewt-ud-2.5-191206.udpipe"</span>)</span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>Q <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Q50"</span>,<span class="st">"Q51"</span>,<span class="st">"Q52"</span>,<span class="st">"Q75"</span>,<span class="st">"Q76"</span>,<span class="st">"Q77"</span>)</span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>){</span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>  x[[i]] <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">udpipe_annotate</span>(ud_model, <span class="at">x =</span> q_en[,i<span class="sc">+</span><span class="dv">2</span>], <span class="at">tagger=</span><span class="st">"default"</span>,<span class="at">parser=</span><span class="st">"none"</span>))</span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(x)[[i]] <span class="ot">&lt;-</span> Q[i]</span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">' ana '</span>, <span class="st">'instructors'</span>,x)))</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#since "ana" is within some words, I changed "ANA" and "Ana Rojo" to rojo manually</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'luis'</span>,<span class="st">'instructors'</span>,x)))</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'juan'</span>,<span class="st">'instructors'</span>,x)))</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'modesto'</span>,<span class="st">'instructors'</span>,x)))</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'benilde'</span>,<span class="st">'instructors'</span>,x)))</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">"</span><span class="sc">\\\\</span><span class="st">"</span>,<span class="st">""</span>,x)))</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'oscar'</span>,<span class="st">'instructors'</span>,x)))</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'teachers'</span>,<span class="st">'instructors'</span>,x)))</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'internship'</span>,<span class="st">'practices'</span>,x)))</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'internshipss'</span>,<span class="st">'practices'</span>,x)))</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'script'</span>,<span class="st">'protocol'</span>,x)))</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'notebooks'</span>,<span class="st">'notebook'</span>,x)))</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="co">#clean and extrack keywords</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co">#from https://hope-data-science.github.io/akc/articles/tutorial_raw_text.html</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="co"># https://cran.r-project.org/web/packages/akc/vignettes/akc_vignette.html</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="co">#model with udpipe &amp; create dictionary   </span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="co">#download the model the first time</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="co">#ud_model &lt;- udpipe_download_model(language = "english")</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="co">#ud_model &lt;- udpipe_load_model(ud_model$file_model)</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="co">#load the model from HD</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>ud_model <span class="ot">&lt;-</span> <span class="fu">udpipe_load_model</span>(<span class="st">"/Users/modesto/Documents/GitHub/bqexav/english-ewt-ud-2.5-191206.udpipe"</span>)</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>Q <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Q50"</span>,<span class="st">"Q51"</span>,<span class="st">"Q52"</span>,<span class="st">"Q75"</span>,<span class="st">"Q76"</span>,<span class="st">"Q77"</span>)</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>){</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>  x[[i]] <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">udpipe_annotate</span>(ud_model, <span class="at">x =</span> q_en[,i<span class="sc">+</span><span class="dv">2</span>], <span class="at">tagger=</span><span class="st">"default"</span>,<span class="at">parser=</span><span class="st">"none"</span>))</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(x)[[i]] <span class="ot">&lt;-</span> Q[i]</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="co"># get stop words from `tidytext` package</span></span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>stop_words <span class="sc">%&gt;%</span></span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pull</span>(word) <span class="sc">%&gt;%</span></span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unique</span>() <span class="ot">-&gt;</span> my_stopword</span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="co">#make dictionaries</span></span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>my_dict <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>){</span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>  my_dict[[i]] <span class="ot">&lt;-</span> <span class="fu">make_dict</span>(x[[i]]<span class="sc">$</span>lemma)</span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>  <span class="co">#names(my_dict)[[i]] &lt;- Q[i]</span></span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="co">#extract keywords with akc</span></span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>extracted_keywords <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>){</span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>  q_en <span class="sc">%&gt;%</span></span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>    <span class="fu">keyword_extract</span>(<span class="at">id =</span> <span class="st">"X"</span>,<span class="at">text =</span> <span class="fu">colnames</span>(q_en)[i<span class="sc">+</span><span class="dv">2</span>],</span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>    <span class="at">dict =</span> my_dict[[i]],<span class="at">stopword =</span> my_stopword) <span class="ot">-&gt;</span> extracted_keywords[[i]]</span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(extracted_keywords)[[i]] <span class="ot">&lt;-</span> Q[i]</span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a><span class="co">#clean data</span></span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>clean_data <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>){</span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>  extracted_keywords[[i]] <span class="sc">%&gt;%</span></span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>    <span class="fu">keyword_clean</span>() <span class="ot">-&gt;</span> clean_data[[i]]</span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(clean_data)[[i]] <span class="ot">&lt;-</span> Q[i]</span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="co"># get stop words from `tidytext` package</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>stop_words <span class="sc">%&gt;%</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pull</span>(word) <span class="sc">%&gt;%</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unique</span>() <span class="ot">-&gt;</span> my_stopword</span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="co">#make dictionaries</span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>my_dict <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>){</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>  my_dict[[i]] <span class="ot">&lt;-</span> <span class="fu">make_dict</span>(x[[i]]<span class="sc">$</span>lemma)</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>  <span class="co">#names(my_dict)[[i]] &lt;- Q[i]</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="co">#extract keywords with akc</span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>extracted_keywords <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>){</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>  q_en <span class="sc">%&gt;%</span></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>    <span class="fu">keyword_extract</span>(<span class="at">id =</span> <span class="st">"X"</span>,<span class="at">text =</span> <span class="fu">colnames</span>(q_en)[i<span class="sc">+</span><span class="dv">2</span>],</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">dict =</span> my_dict[[i]],<span class="at">stopword =</span> my_stopword) <span class="ot">-&gt;</span> extracted_keywords[[i]]</span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(extracted_keywords)[[i]] <span class="ot">&lt;-</span> Q[i]</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a><span class="co">#clean data</span></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>clean_data <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>){</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>  extracted_keywords[[i]] <span class="sc">%&gt;%</span></span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>    <span class="fu">keyword_clean</span>() <span class="ot">-&gt;</span> clean_data[[i]]</span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(clean_data)[[i]] <span class="ot">&lt;-</span> Q[i]</span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="co">#visualize network as in udpipe vignette</span></span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a><span class="co">#plot from akc extracted_keywords</span></span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>questions <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"questions_final.csv"</span>, <span class="at">head=</span><span class="cn">TRUE</span>, <span class="at">sep=</span><span class="st">","</span>) <span class="co">#load questions</span></span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>titles <span class="ot">&lt;-</span> questions[<span class="fu">c</span>(<span class="dv">50</span>,<span class="dv">51</span>,<span class="dv">52</span>,<span class="dv">75</span>,<span class="dv">76</span>,<span class="dv">77</span>),<span class="dv">4</span>]</span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>stats <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>wordnetwork <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>plotkey <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>){</span>
-<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>  stats[[i]] <span class="ot">&lt;-</span> <span class="fu">cooccurrence</span>(<span class="at">x =</span> clean_data[[i]], </span>
-<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>                     <span class="at">term =</span> <span class="st">"keyword"</span>, <span class="at">group =</span> <span class="st">"id"</span>)</span>
-<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>  wordnetwork[[i]] <span class="ot">&lt;-</span> <span class="fu">head</span>(stats[[i]], <span class="dv">40</span>)</span>
-<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>  wordnetwork[[i]] <span class="ot">&lt;-</span> <span class="fu">graph_from_data_frame</span>(wordnetwork[[i]])</span>
-<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>  plotkey[[i]] <span class="ot">&lt;-</span> <span class="fu">ggraph</span>(wordnetwork[[i]], <span class="at">layout =</span> <span class="st">"fr"</span>) <span class="sc">+</span></span>
-<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_edge_link</span>(<span class="fu">aes</span>(<span class="at">width =</span> cooc, <span class="at">edge_alpha =</span> cooc), <span class="at">edge_colour =</span> <span class="st">"indianred2"</span>) <span class="sc">+</span></span>
-<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_node_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> name), <span class="at">col =</span> <span class="st">"darkgreen"</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
-<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_graph</span>(<span class="at">base_family =</span> <span class="st">"Arial"</span>) <span class="sc">+</span></span>
-<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
-<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span>titles[[i]], <span class="at">subtitle =</span> <span class="st">"Cooccurrences within same sentence (Nouns &amp; Adjective)"</span>)</span>
-<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a><span class="co">#show the plots</span></span>
-<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(<span class="at">plotlist=</span>plotkey,<span class="at">nrow=</span><span class="dv">6</span>,<span class="at">ncol=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="co">#visualize network as in udpipe vignette</span></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a><span class="co">#plot from akc extracted_keywords</span></span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>questions <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"questions_final.csv"</span>, <span class="at">head=</span><span class="cn">TRUE</span>, <span class="at">sep=</span><span class="st">","</span>) <span class="co">#load questions</span></span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>titles <span class="ot">&lt;-</span> questions[<span class="fu">c</span>(<span class="dv">50</span>,<span class="dv">51</span>,<span class="dv">52</span>,<span class="dv">75</span>,<span class="dv">76</span>,<span class="dv">77</span>),<span class="dv">4</span>]</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>stats <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>wordnetwork <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>plotkey <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>){</span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>  stats[[i]] <span class="ot">&lt;-</span> <span class="fu">cooccurrence</span>(<span class="at">x =</span> clean_data[[i]], </span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>                     <span class="at">term =</span> <span class="st">"keyword"</span>, <span class="at">group =</span> <span class="st">"id"</span>)</span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>  wordnetwork[[i]] <span class="ot">&lt;-</span> <span class="fu">head</span>(stats[[i]], <span class="dv">40</span>)</span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>  wordnetwork[[i]] <span class="ot">&lt;-</span> <span class="fu">graph_from_data_frame</span>(wordnetwork[[i]])</span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>  plotkey[[i]] <span class="ot">&lt;-</span> <span class="fu">ggraph</span>(wordnetwork[[i]], <span class="at">layout =</span> <span class="st">"fr"</span>) <span class="sc">+</span></span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_edge_link</span>(<span class="fu">aes</span>(<span class="at">width =</span> cooc, <span class="at">edge_alpha =</span> cooc), <span class="at">edge_colour =</span> <span class="st">"indianred2"</span>) <span class="sc">+</span></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_node_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> name), <span class="at">col =</span> <span class="st">"darkgreen"</span>, <span class="at">size =</span> <span class="dv">7</span>, <span class="at">repel=</span>T,<span class="at">box.padding=</span><span class="fl">0.06</span>) <span class="sc">+</span></span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_graph</span>(<span class="at">base_family =</span> <span class="st">"Arial"</span>, <span class="at">plot_margin =</span> <span class="fu">margin</span>(<span class="dv">0</span>, <span class="dv">30</span>, <span class="dv">0</span>, <span class="dv">30</span>)) <span class="sc">+</span></span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span>titles[[i]], <span class="at">subtitle =</span> <span class="st">"Cooccurrences within same sentence (Nouns &amp; Adjective)"</span>) </span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a><span class="co">#show the plots</span></span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(<span class="at">plotlist=</span>plotkey,<span class="at">nrow=</span><span class="dv">6</span>,<span class="at">ncol=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="surveys_free_text_files/figure-html/i-1.png" class="img-fluid" width="768"></p>
@@ -366,8 +367,8 @@ Preliminary
 <span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>  wordnetwork[[i]] <span class="ot">&lt;-</span> <span class="fu">graph_from_data_frame</span>(wordnetwork[[i]])</span>
 <span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>  plotkey[[i]] <span class="ot">&lt;-</span> <span class="fu">ggraph</span>(wordnetwork[[i]], <span class="at">layout =</span> <span class="st">"fr"</span>) <span class="sc">+</span></span>
 <span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_edge_link</span>(<span class="fu">aes</span>(<span class="at">width =</span> cooc, <span class="at">edge_alpha =</span> cooc), <span class="at">edge_colour =</span> <span class="st">"indianred2"</span>) <span class="sc">+</span></span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_node_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> name), <span class="at">col =</span> <span class="st">"darkgreen"</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_graph</span>(<span class="at">base_family =</span> <span class="st">"Arial"</span>) <span class="sc">+</span></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_node_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> name), <span class="at">col =</span> <span class="st">"darkgreen"</span>, <span class="at">size =</span> <span class="dv">6</span>,<span class="at">repel=</span>T,<span class="at">box.padding=</span><span class="fl">0.06</span>) <span class="sc">+</span></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_graph</span>(<span class="at">base_family =</span> <span class="st">"Arial"</span>, <span class="at">plot_margin =</span> <span class="fu">margin</span>(<span class="dv">0</span>, <span class="dv">15</span>, <span class="dv">0</span>, <span class="dv">15</span>)) <span class="sc">+</span></span>
 <span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
 <span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span><span class="fu">paste0</span>(titles[[<span class="fu">ifelse</span>( <span class="sc">!</span>(i <span class="sc">%%</span> <span class="dv">6</span><span class="sc">==</span><span class="dv">0</span>),<span class="fu">as.integer</span>(i<span class="sc">/</span><span class="dv">6</span>)<span class="sc">+</span><span class="dv">1</span>,i<span class="sc">/</span><span class="dv">6</span>)]], <span class="st">"- "</span>,year[i]), <span class="at">subtitle =</span> <span class="st">"Cooccurrences within same sentence (Nouns &amp; Adjective)"</span>)</span>
 <span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>}</span>
