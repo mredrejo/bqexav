@@ -21,9 +21,22 @@ format:
 
 # Contents and Disclaimer
 
-This file contains the data from the "Experimental Advanced Biochemistry I" course (Biochemistry Degree, [Universidad Autónoma de Madrid](https://www.uam.es)). The questionnaires were completed by the students in 2017-2022 directly on Moodle on the last day of each course. This is a preliminary summary of the data analysis.  The GitHub [repo](https://github.com/mredrejo/bqexav) contains the original files of all analyzes. This report only contains the data analysis and plots, without any results discussion.
+```{r}
 
-The data is made available under the Creative Common License (CC BY-NC-ND 3.0 ES).  Contact [modesto.redrejo\@uam.es](mailto:modesto.redrejo@uam.es) for more information.
+```
+
+This file contains the data from the "Experimental Advanced Biochemistry I" course (Biochemistry Degree, [Universidad Autónoma de Madrid](https://www.uam.es)). Over the last years, a number of lecturers and professors from the [Biochemistry Department](https://www.bq.uam.es/Index.php) have participated in this course, as follows (in alphabetical order): Julián Aragonés, Juan J. Arredondo, Víctor Calvo, José G. Castaño, Alicia González-Martín, Benilde Jiménez, Marina Lasa, Óscar Martínez-Costa, Luis del Peso, Modesto Redrejo-Rodríguez, Ana I. Rojo, Alejandro Samhan-Arias, and Isabel Sánchez-Pérez.
+
+The questionnaires were completed by the students in 2017-2022 directly on Moodle on the last day of each course. This is a preliminary summary of the data analysis. The GitHub [repo](https://github.com/mredrejo/bqexav) contains the original files of all analyzes. This report only contains the data analysis and plots, without any results discussion. The companion manuscript will be available soon.
+
+The data is made available under the Creative Common License (CC BY-NC-ND 3.0 ES). 
+
+::: {.callout-warning}
+## Preliminary
+This is only a preliminary analysis. Contact [modesto.redrejo\@uam.es](mailto:modesto.redrejo@uam.es) or [juan.arredondo\@uam.es](mailto:juan.arrredondo@uam.es) for any feedback or queries.
+:::
+
+
 
 # Moodle survey
 
@@ -35,7 +48,7 @@ invisible(install.packages(unavailable))
 invisible(lapply(paquetes, library, character.only = TRUE))
 ```
 
-We import data from student responses in 5 years, between 2018-2022. The quiz consists of up to 77 questions, including 5 free text questions (50, 51, 52, 75, 76 & 77), 7 questions with three options, and the rest as a 5-degrees *Likert* scale. 
+We import data from student responses in 5 years, between 2018-2022. The quiz consists of up to 77 questions, including 5 free text questions (50, 51, 52, 75, 76 & 77), 7 questions with three options, and the rest as a 5-degrees *Likert* scale.
 
 ```{r warning=FALSE}
 #load questions
@@ -57,8 +70,7 @@ kbl(questions[,1:4], align = "cccl", caption = "Table 1. Students opinion quizz.
 
 # Load data and pairwise t.test
 
-Survey responses were downloaded from Moodle as txt/csv files. Moodle updates caused some format differences that could be worked around after opening the files with Numbers and exporting them as tables with ";" as the column separator. We now show all vs. all pairwise t-tests performed to detect significant differences in responses per year. 
-The tables below contain the pairwise p-values for each comparison, with significant values highlighted in blue (p<0.05) and red (p<0.01)
+Survey responses were downloaded from Moodle as txt/csv files. Moodle updates caused some format differences that could be worked around after opening the files with Numbers and exporting them as tables with ";" as the column separator. We now show all vs. all pairwise t-tests performed to detect significant differences in responses per year. The tables below contain the pairwise p-values for each comparison, with significant values highlighted in blue (p\<0.05) and red (p\<0.01)
 
 ```{r warning=FALSE, results='asis'}
 
@@ -119,7 +131,6 @@ for (i in 2:ncol(subdata)){
 }
 
 ```
-
 
 # Likert scale plots
 
@@ -227,7 +238,7 @@ plot(xlikgroup5e, type = "bar", centered = T)
 ## Learning Objectives
 
 ```{r Fig9, echo=TRUE, fig.height=12,warning=FALSE}
-subdata[,c(43:50)] <- lapply(subdata[,c(42:50)], function(x) factor(x, 
+subdata[,c(42:50)] <- lapply(subdata[,c(42:50)], function(x) factor(x, 
       labels = c("Not at all","Disagree","OK","Agree","Completely Agree"))
   )
 
@@ -253,6 +264,10 @@ plot(xlikgroup5g, type = "bar", centered = T, title="ELN")
 # [Open questions](surveys_free_text.html)
 
 Free-text questions have been analyzed independently by automatic text *lemmatization* and plot methods. The detailed report can be found [here](surveys_free_text.html).
+
+# Acknowledgments
+
+This work has been supported by UAM Teaching Innovation Grants (M-015.17-INN, M-020.18-IMP, M_002.19_INN and M_009.20_IMP).
 
 ### Session Info
 
