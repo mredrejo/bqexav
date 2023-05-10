@@ -28,7 +28,7 @@ lapply(paquetes, library, character.only = TRUE,quietly = TRUE)
 ```
 
 # Contents and Disclaimer
-This page refers to student surveys of "Experimental Advanced Biochemistry I" course (Biochemistry Degree, [Universidad Autónoma de Madrid](https://www.uam.es)). Description of questionnaires and analysis of quantitative questions is in the main page [here](https://mredrejo.github.io/bqexav/). The GitHub [repo](https://github.com/mredrejo/bqexav) contains the original files of all analyzes.
+This page refers to student surveys of "Experimental Advanced Biochemistry I" course (Biochemistry Degree, [Universidad Autónoma de Madrid](https://www.uam.es)). Description of questionnaires and analysis of quantitative questions is in the main page [here](https://mredrejo.github.io/bqexav/). The GitHub [repo](https://github.com/mredrejo/bqexav) contains the original files of all analyses.
 
 The data is made available under the Creative Common License (CC BY-NC-ND 3.0 ES).  
 
