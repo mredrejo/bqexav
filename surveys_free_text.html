@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Modesto">
-<meta name="dcterms.date" content="2023-05-08">
+<meta name="dcterms.date" content="2023-05-10">
 
 <title>BqExAvI Survey Analysis (2017-2022). Part II</title>
 <style>
@@ -140,7 +140,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 8, 2023</p>
+      <p class="date">May 10, 2023</p>
     </div>
   </div>
   
@@ -163,8 +163,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <section id="contents-and-disclaimer" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Contents and Disclaimer</h1>
-<p>This page refers to student surveys of “Experimental Advanced Biochemistry I” course (Biochemistry Degree, <a href="https://www.uam.es">Universidad Autónoma de Madrid</a>). Description of questionnaires and analysis of quantitative questions is <a href="https://mredrejo.github.io/bqexav/">here</a>. The GitHub <a href="https://github.com/mredrejo/bqexav">repo</a> contains the original files of all analyzes.</p>
-<p>The data is made available under the Creative Common License (CC BY-NC-ND 3.0 ES). Contact <a href="mailto:modesto.redrejo@uam.es">modesto.redrejo@uam.es</a> for more information.</p>
+<p>This page refers to student surveys of “Experimental Advanced Biochemistry I” course (Biochemistry Degree, <a href="https://www.uam.es">Universidad Autónoma de Madrid</a>). Description of questionnaires and analysis of quantitative questions is in the main page <a href="https://mredrejo.github.io/bqexav/">here</a>. The GitHub <a href="https://github.com/mredrejo/bqexav">repo</a> contains the original files of all analyzes.</p>
+<p>The data is made available under the Creative Common License (CC BY-NC-ND 3.0 ES).</p>
 <div class="callout-warning callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -175,7 +175,7 @@ Preliminary
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>This is only a preliminary analysis.</p>
+<p>This is only a preliminary analysis. Contact <a href="mailto:modesto.redrejo@uam.es">modesto.redrejo@uam.es</a> for more information.</p>
 </div>
 </div>
 </section>
@@ -207,7 +207,7 @@ Preliminary
 </details>
 </div>
 <p>Then, we processed the table and process it with <code>akc</code> and <code>udpipe</code> R packages. The code is largely based in an <code>akc</code> <a href="https://hope-data-science.github.io/akc/articles/tutorial_raw_text.html">tutorial</a> and <code>updpipe</code> <a href="https://cran.r-project.org/web/packages/udpipe/vignettes/udpipe-usecase-postagging-lemmatisation.html">extended vignette</a>.</p>
-<p>Previously, but after some rounds of <em>try and error</em>, we also changed some words to unify terms (e.g.&nbsp;lab and laboratory, instructors’ names, etc.). We found that the combination of the new <code>akc</code> package and <code>udpipe</code> achieved the best automatic term extraction with improved selection of key terms with reduced noise (conjunctions and other extra words). However, as <code>akc</code> is designed for text network-based classification which is beyond our scope, so we decided to implement <code>udpipe</code> network plot. Each plot contains the connections of the top-40 most common tokens.</p>
+<p>Previously, but after some rounds of <em>try and error</em>, we also performed some <em>ad hoc</em> word switching to unify terms (e.g.&nbsp;combine lab and laboratory, remove instructors’ names, etc.). We found that the combination of the new <code>akc</code> package and <code>udpipe</code> achieved the best automatic term extraction and lemmatization with improved selection of key terms with reduced noise (conjunctions and other extra words). However, as <code>akc</code> is designed for text network-based classification which is beyond our scope, so we decided to implement <code>udpipe</code> network plot. Each plot contains the connections of the top-40 most common keywords (nouns and verbs).</p>
 <div class="cell">
 <details>
 <summary>Show the code</summary>
@@ -226,7 +226,7 @@ Preliminary
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'barbara acosta'</span>,<span class="st">'assistants'</span>,x)))</span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'rojo'</span>,<span class="st">'instructors'</span>,x)))</span>
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">' ana '</span>, <span class="st">'instructors'</span>,x)))</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#since "ana" is within some words, I changed "ANA" and "Ana Rojo" to rojo manually</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#since "ana" is within some words, I also changed "ANA" and "Ana Rojo" to rojo manually</span></span>
 <span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'luis'</span>,<span class="st">'instructors'</span>,x)))</span>
 <span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'juan'</span>,<span class="st">'instructors'</span>,x)))</span>
 <span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>q_en <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">apply</span>(q_en, <span class="dv">2</span>, <span class="cf">function</span>(x)  <span class="fu">gsub</span>(<span class="st">'modesto'</span>,<span class="st">'instructors'</span>,x)))</span>
@@ -307,7 +307,7 @@ Preliminary
 <span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_edge_link</span>(<span class="fu">aes</span>(<span class="at">width =</span> cooc, <span class="at">edge_alpha =</span> cooc), <span class="at">edge_colour =</span> <span class="st">"indianred2"</span>) <span class="sc">+</span></span>
 <span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_node_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> name), <span class="at">col =</span> <span class="st">"darkgreen"</span>, <span class="at">size =</span> <span class="dv">7</span>, <span class="at">repel=</span>T,<span class="at">box.padding=</span><span class="fl">0.06</span>) <span class="sc">+</span></span>
 <span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_graph</span>(<span class="at">base_family =</span> <span class="st">"Arial"</span>, <span class="at">plot_margin =</span> <span class="fu">margin</span>(<span class="dv">0</span>, <span class="dv">30</span>, <span class="dv">0</span>, <span class="dv">30</span>)) <span class="sc">+</span></span>
-<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>, <span class="at">plot.margin=</span><span class="fu">unit</span>(<span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">0</span>), <span class="st">"cm"</span>)) <span class="sc">+</span></span>
 <span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span>titles[[i]], <span class="at">subtitle =</span> <span class="st">"Cooccurrences within same sentence (Nouns &amp; Adjective)"</span>) </span>
 <span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a>}</span>
@@ -369,7 +369,7 @@ Preliminary
 <span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_edge_link</span>(<span class="fu">aes</span>(<span class="at">width =</span> cooc, <span class="at">edge_alpha =</span> cooc), <span class="at">edge_colour =</span> <span class="st">"indianred2"</span>) <span class="sc">+</span></span>
 <span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_node_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> name), <span class="at">col =</span> <span class="st">"darkgreen"</span>, <span class="at">size =</span> <span class="dv">6</span>,<span class="at">repel=</span>T,<span class="at">box.padding=</span><span class="fl">0.06</span>) <span class="sc">+</span></span>
 <span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_graph</span>(<span class="at">base_family =</span> <span class="st">"Arial"</span>, <span class="at">plot_margin =</span> <span class="fu">margin</span>(<span class="dv">0</span>, <span class="dv">15</span>, <span class="dv">0</span>, <span class="dv">15</span>)) <span class="sc">+</span></span>
-<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>, <span class="at">plot.margin=</span><span class="fu">unit</span>(<span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>), <span class="st">"cm"</span>)) <span class="sc">+</span></span>
 <span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span><span class="fu">paste0</span>(titles[[<span class="fu">ifelse</span>( <span class="sc">!</span>(i <span class="sc">%%</span> <span class="dv">6</span><span class="sc">==</span><span class="dv">0</span>),<span class="fu">as.integer</span>(i<span class="sc">/</span><span class="dv">6</span>)<span class="sc">+</span><span class="dv">1</span>,i<span class="sc">/</span><span class="dv">6</span>)]], <span class="st">"- "</span>,year[i]), <span class="at">subtitle =</span> <span class="st">"Cooccurrences within same sentence (Nouns &amp; Adjective)"</span>)</span>
 <span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a><span class="co">#show the plots</span></span>

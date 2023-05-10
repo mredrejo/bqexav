@@ -28,13 +28,13 @@ lapply(paquetes, library, character.only = TRUE,quietly = TRUE)
 ```
 
 # Contents and Disclaimer
-This page refers to student surveys of "Experimental Advanced Biochemistry I" course (Biochemistry Degree, [Universidad Autónoma de Madrid](https://www.uam.es)). Description of questionnaires and analysis of quantitative questions is [here](https://mredrejo.github.io/bqexav/). The GitHub [repo](https://github.com/mredrejo/bqexav) contains the original files of all analyzes.
+This page refers to student surveys of "Experimental Advanced Biochemistry I" course (Biochemistry Degree, [Universidad Autónoma de Madrid](https://www.uam.es)). Description of questionnaires and analysis of quantitative questions is in the main page [here](https://mredrejo.github.io/bqexav/). The GitHub [repo](https://github.com/mredrejo/bqexav) contains the original files of all analyzes.
 
-The data is made available under the Creative Common License (CC BY-NC-ND 3.0 ES).  Contact [modesto.redrejo\@uam.es](mailto:modesto.redrejo@uam.es) for more information.
+The data is made available under the Creative Common License (CC BY-NC-ND 3.0 ES).  
 
 ::: {.callout-warning}
 ## Preliminary
-This is only a preliminary analysis.
+This is only a preliminary analysis. Contact [modesto.redrejo\@uam.es](mailto:modesto.redrejo@uam.es) for more information.
 :::
 
 # Free-text questions
@@ -65,7 +65,7 @@ write.csv(data_en,"survey_open_en.csv")
 
 Then, we processed the table and process it with `akc` and `udpipe` R packages. The code is largely based in an `akc` [tutorial](https://hope-data-science.github.io/akc/articles/tutorial_raw_text.html) and `updpipe` [extended vignette](https://cran.r-project.org/web/packages/udpipe/vignettes/udpipe-usecase-postagging-lemmatisation.html).
 
-Previously, but after some rounds of *try and error*, we also changed some words to unify terms (e.g. lab and laboratory, instructors' names, etc.). We found that the combination of the new `akc` package and `udpipe` achieved the best automatic term extraction with improved selection of key terms with reduced noise (conjunctions and other extra words). However, as `akc` is designed for text network-based classification which is beyond our scope, so we decided to implement `udpipe` network plot. Each plot contains the connections of the top-40 most common tokens.
+Previously, but after some rounds of *try and error*, we also performed some *ad hoc* word switching to unify terms (e.g. combine lab and laboratory, remove instructors' names, etc.). We found that the combination of the new `akc` package and `udpipe` achieved the best automatic term extraction and lemmatization with improved selection of key terms with reduced noise (conjunctions and other extra words). However, as `akc` is designed for text network-based classification which is beyond our scope, so we decided to implement `udpipe` network plot. Each plot contains the connections of the top-40 most common keywords (nouns and verbs).
 
 ```{r i, fig.height=40,fig.width=8, warning=FALSE, message=FALSE}
 
@@ -84,7 +84,7 @@ q_en <- data.frame(apply(q_en, 2, function(x)  gsub('barbara','assistants',x)))
 q_en <- data.frame(apply(q_en, 2, function(x)  gsub('barbara acosta','assistants',x)))
 q_en <- data.frame(apply(q_en, 2, function(x)  gsub('rojo','instructors',x)))
 q_en <- data.frame(apply(q_en, 2, function(x)  gsub(' ana ', 'instructors',x)))
-#since "ana" is within some words, I changed "ANA" and "Ana Rojo" to rojo manually
+#since "ana" is within some words, I also changed "ANA" and "Ana Rojo" to rojo manually
 q_en <- data.frame(apply(q_en, 2, function(x)  gsub('luis','instructors',x)))
 q_en <- data.frame(apply(q_en, 2, function(x)  gsub('juan','instructors',x)))
 q_en <- data.frame(apply(q_en, 2, function(x)  gsub('modesto','instructors',x)))
@@ -165,7 +165,7 @@ for (i in 1:6){
     geom_edge_link(aes(width = cooc, edge_alpha = cooc), edge_colour = "indianred2") +
     geom_node_text(aes(label = name), col = "darkgreen", size = 7, repel=T,box.padding=0.06) +
     theme_graph(base_family = "Arial", plot_margin = margin(0, 30, 0, 30)) +
-    theme(legend.position = "none") +
+    theme(legend.position = "none", plot.margin=unit(c(0,0,2,0), "cm")) +
     labs(title =titles[[i]], subtitle = "Cooccurrences within same sentence (Nouns & Adjective)") 
 
 }
@@ -223,7 +223,7 @@ for (i in 1:36){
     geom_edge_link(aes(width = cooc, edge_alpha = cooc), edge_colour = "indianred2") +
     geom_node_text(aes(label = name), col = "darkgreen", size = 6,repel=T,box.padding=0.06) +
     theme_graph(base_family = "Arial", plot_margin = margin(0, 15, 0, 15)) +
-    theme(legend.position = "none") +
+    theme(legend.position = "none", plot.margin=unit(c(0,0,1,0), "cm")) +
     labs(title =paste0(titles[[ifelse( !(i %% 6==0),as.integer(i/6)+1,i/6)]], "- ",year[i]), subtitle = "Cooccurrences within same sentence (Nouns & Adjective)")
 }
 #show the plots
